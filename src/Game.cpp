@@ -1,6 +1,19 @@
 #include "Game.hpp"
 #include "GameState.hpp"
 
+Game::Game()
+{
+	// Create a 1280 X 720 game window with the title "City Builder" and set max frame rate to be 60fps.
+	m_game_window.create(sf::VideoMode(1280, 720), "City Builder");
+	m_game_window.setFramerateLimit(60);
+}
+
+Game::~Game()
+{
+	while (!(m_state_stack.empty()))
+		this->popState();
+}
+
 void Game::pushState(std::unique_ptr<GameState> state_ptr)
 {
 	m_state_stack.emplace(std::move(state_ptr));
@@ -48,17 +61,4 @@ void Game::gameLoop()
 		curr_game_state->render(delta_time);
 		m_game_window.display();
 	}
-}
-
-Game::Game()
-{
-	// Create a 1280 X 720 game window with the title "City Builder" and set max frame rate to be 60fps.
-	m_game_window.create(sf::VideoMode(1280, 720), "City Builder");
-	m_game_window.setFramerateLimit(60);
-}
-
-Game::~Game()
-{
-	while (!(m_state_stack.empty()))
-		this->popState();
 }

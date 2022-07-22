@@ -1,5 +1,20 @@
 #include "MainGameState.hpp"
 
+MainGameState::MainGameState(std::unique_ptr<Game> game_ptr)
+{
+	// Store the game pointer.
+	m_game_ptr = std::move(game_ptr);
+	// Set main game view and GUI view's size.
+	sf::Vector2f game_view_size = sf::Vector2f(m_game_ptr->m_game_window.getSize());
+	m_main_game_view.setSize(game_view_size);
+	m_gui_view.setSize(game_view_size);
+
+	// Set main game view and GUI view's center(origin of all transformations) to be the center of the window's size.
+	game_view_size *= 0.5f;
+	m_main_game_view.setCenter(game_view_size);
+	m_gui_view.setCenter(game_view_size);
+}
+
 void MainGameState::render(const float dt)
 {
 	// Clear previous content and draw the background.
@@ -33,7 +48,7 @@ void MainGameState::inputProcess()
 				// Set main menu view to new window's size.
 				m_main_game_view.setSize(event.size.width, event.size.height);
 				m_gui_view.setSize(event.size.width, event.size.height);
-				// Convert and set background position from window coordinates (0, 0) to world coordinates using GUI view.
+				// Set background position to window position (0, 0) related world position inside GUI view.
 				m_game_ptr->m_background.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0, 0), m_gui_view));
 				// Set background to fill the entire window.
 				m_game_ptr->m_background.setScale(
@@ -56,21 +71,6 @@ void MainGameState::inputProcess()
 				break;
 		}
 	}
-}
-
-MainGameState::MainGameState(std::unique_ptr<Game> game_ptr)
-{
-	// Store the game pointer.
-	m_game_ptr = std::move(game_ptr);
-	// Set main game view and GUI view's size.
-	sf::Vector2f game_view_size = sf::Vector2f(m_game_ptr->m_game_window.getSize());
-	m_main_game_view.setSize(game_view_size);
-	m_gui_view.setSize(game_view_size);
-
-	// Set main game view and GUI view's center to be the center of the window's size.
-	game_view_size *= 0.5f;
-	m_main_game_view.setCenter(game_view_size);
-	m_gui_view.setCenter(game_view_size);
 }
 
 void MainGameState::loadGame()
