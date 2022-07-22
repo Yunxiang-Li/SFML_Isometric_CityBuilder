@@ -10,7 +10,7 @@ project(SFML_CityBuilder)
 set(SFML_STATIC_LIBRARIES TRUE)
 
 # Set the C++ standard to be used
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 # Set cmake warning.
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -28,7 +28,7 @@ find_package(SFML REQUIRED COMPONENTS graphics window system)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Add the executable of the program
-add_executable(SFML_CityBuilder src/main.cpp src/Game.cpp)
+add_executable(SFML_CityBuilder src/main.cpp src/Game.cpp src/MainGameState.cpp src/MainMenuGameState.cpp)
 
 # Set linked libraries
 target_link_libraries(SFML_CityBuilder PUBLIC sfml-system sfml-window sfml-graphics)

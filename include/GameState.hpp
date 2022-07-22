@@ -11,7 +11,7 @@ class GameState
 {
 	public:
 	// A member indicates the unique pointer of the game object.
-	std::unique_ptr<Game> game_ptr;
+	std::unique_ptr<Game> m_game_ptr;
 
 	/**
 	 * Render the related scene according to delta time.
@@ -31,4 +31,4 @@ class GameState
 	virtual void inputProcess() = 0;
 };
 
-#endif
+#endif // GAMESTATE_HPP

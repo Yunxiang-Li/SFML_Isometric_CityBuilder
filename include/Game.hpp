@@ -55,10 +55,12 @@ class Game
 	 */
 	void gameLoop();
 
-	// A stack holds all GameState unique pointers.
-	std::stack<std::unique_ptr<GameState>> state_stack;
 	// A sf:RenderWindow object indicates the game window.
-	sf::RenderWindow game_window;
+	sf::RenderWindow m_game_window;
+
+	private:
+	// A stack holds all GameState unique pointers.
+	std::stack<std::unique_ptr<GameState>> m_state_stack;
 };
 
-#endif
+#endif // GAME_HPP
