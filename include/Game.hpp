@@ -7,6 +7,7 @@
 #include <memory>
 // Include for sf::RenderWindow.
 #include <SFML/Graphics.hpp>
+#include "TextureManager.hpp"
 
 // Forward declaration.
 class GameState;
@@ -48,7 +49,7 @@ class Game
 	 * Retrieve the top(current) game state as a unique pointer.
 	 * @return A std::unique_ptr indicates the top(current) game state.
 	 */
-	std::unique_ptr<GameState> peekState();
+	GameState* peekState();
 
 	/**
 	 * Process the main game loop.
@@ -57,8 +58,15 @@ class Game
 
 	// A sf:RenderWindow object indicates the game window.
 	sf::RenderWindow m_game_window;
+	// A sf::Sprite object indicates the background sprite.
+	sf::Sprite m_background_sprite;
 
 	private:
+  	/**
+  	 * Load all game required textures.
+  	 */
+  	void loadGameTextures();
+
 	// A stack holds all GameState unique pointers.
 	std::stack<std::unique_ptr<GameState>> m_state_stack;
 };

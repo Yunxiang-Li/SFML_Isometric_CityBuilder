@@ -10,9 +10,6 @@
 class GameState
 {
 	public:
-	// A member indicates the unique pointer of the game object.
-	std::unique_ptr<Game> m_game_ptr;
-
 	/**
 	 * Render the related scene according to delta time.
 	 * @param dt A const float value indicates the delta time.
@@ -29,6 +26,9 @@ class GameState
 	 * Handle user's input in the related scene.
 	 */
 	virtual void inputProcess() = 0;
+
+    // A member indicates the shared pointer of the game object.
+    std::shared_ptr<Game> m_game_ptr;
 };
 
 #endif // GAMESTATE_HPP

@@ -1,11 +1,21 @@
 #include "Game.hpp"
 #include "GameState.hpp"
 
+// Store all game string literals.
+const std::string GAME_TITLE = "City Builder";
+const std::string GAME_BACKGROUND_TEXTURE_NAME = "background";
+const std::string GAME_BACKGROUND_TEXTURE_PATH = "../resources/images/background.png";
+
 Game::Game()
 {
 	// Create a 1280 X 720 game window with the title "City Builder" and set max frame rate to be 60fps.
-	m_game_window.create(sf::VideoMode(1280, 720), "City Builder");
+	m_game_window.create(sf::VideoMode(1280, 720), GAME_TITLE);
 	m_game_window.setFramerateLimit(60);
+
+	// Load all game textures.
+	loadGameTextures();
+	// Set up game background's sprite object.
+	m_background_sprite.setTexture(TextureManager::getInstance()->getTextureRef(GAME_BACKGROUND_TEXTURE_NAME));
 }
 
 Game::~Game()
@@ -31,11 +41,11 @@ void Game::switchState(std::unique_ptr<GameState> state_ptr)
 	this->pushState(std::move(state_ptr));
 }
 
-std::unique_ptr<GameState> Game::peekState()
+GameState* Game::peekState()
 {
 	if (m_state_stack.empty())
 		return nullptr;
-	return std::move(m_state_stack.top());
+	return m_state_stack.top().get();
 }
 
 void Game::gameLoop()
@@ -47,18 +57,21 @@ void Game::gameLoop()
 		// Get the elapsed time since last frame and convert it to seconds inside a float value.
 		sf::Time elapsed_time = game_clock.restart();
 		float delta_time = elapsed_time.asSeconds();
-		// Store the game's current state.
-		std::unique_ptr<GameState> curr_game_state = this->peekState();
 		// If the game is not in any states, then continue to next frame.
-		if (curr_game_state == nullptr)
+		if (this->peekState() == nullptr)
 			continue;
 		// Else handle player's input and update current frame's behavior within current game state.
-		curr_game_state->inputProcess();
-		curr_game_state->update(delta_time);
+	  	this->peekState()->inputProcess();
+	  	this->peekState()->update(delta_time);
 		// Clear the game window with black color.
 		m_game_window.clear(sf::Color::Black);
 		// Render and display the current frame content.
-		curr_game_state->render(delta_time);
+	  	this->peekState()->render(delta_time);
 		m_game_window.display();
 	}
+}
+
+void Game::loadGameTextures()
+{
+  TextureManager::getInstance()->loadTexture(GAME_BACKGROUND_TEXTURE_NAME, GAME_BACKGROUND_TEXTURE_PATH);
 }

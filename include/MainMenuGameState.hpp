@@ -12,9 +12,9 @@ class MainMenuGameState : public GameState
 	public:
 	/**
 	 * Constructor of MainMenuGameState class.
-	 * @param game_ptr A unique_ptr<Game> object indicates the pointer of game object.
+	 * @param game_ptr A std::shared_ptr<Game> object indicates the pointer of game object.
 	 */
-	MainMenuGameState(std::unique_ptr<Game> game_ptr);
+	MainMenuGameState(std::shared_ptr<Game> game_ptr);
 
 	/**
 	* Render the related scene according to delta time.
@@ -34,6 +34,11 @@ class MainMenuGameState : public GameState
 	virtual void inputProcess() override;
 
 	private:
+    /**
+    * Load the main game.
+    */
+    void loadGame();
+
 	// A sf::View object indicates the game's view.
 	sf::View m_game_view;
 };

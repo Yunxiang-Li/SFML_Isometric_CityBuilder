@@ -11,9 +11,9 @@ class MainGameState : public GameState
 	public:
 	/**
 	 * Constructor of MainGameState class.
-	 * @param game_ptr A unique_ptr<Game> object indicates the pointer of game object.
+	 * @param game_ptr A std::unique_ptr<Game> object indicates the pointer of game object.
 	 */
-	MainGameState(std::unique_ptr<Game> game_ptr);
+	MainGameState(std::shared_ptr<Game> game_ptr);
 
 	/**
 	* Render the related scene according to delta time.
@@ -33,10 +33,6 @@ class MainGameState : public GameState
 	virtual void inputProcess() override;
 
 	private:
-	/**
-	 * Load the main game.
-	 */
-	void loadGame();
 	// A sf::View object indicates the game scene's 2D camera view.
 	sf::View m_main_game_view;
 	// A sf::View object indicates the game scene GUI's 2D camera view.
