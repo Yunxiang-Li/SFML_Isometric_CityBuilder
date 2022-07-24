@@ -9,7 +9,7 @@
  */
 class MainMenuGameState : public GameState
 {
-	public:
+ public:
 	/**
 	 * Constructor of MainMenuGameState class.
 	 * @param game_ptr A std::shared_ptr<Game> object indicates the pointer of game object.
@@ -33,11 +33,11 @@ class MainMenuGameState : public GameState
 	 */
 	virtual void inputProcess() override;
 
-	private:
-    /**
-    * Load the main game.
-    */
-    void loadGame();
+ private:
+	/**
+	* Load the main game.
+	*/
+	void loadGame();
 
 	// A sf::View object indicates the game's view.
 	sf::View m_game_view;

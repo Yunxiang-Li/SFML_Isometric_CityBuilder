@@ -12,14 +12,14 @@
  */
 class TextureManager
 {
-	public:
+ public:
 
-    /**
- 	 * The static method that controls the access to the TextureManager's singleton instance.
-     * On the first run, it creates a singleton object and places it into the static field.
-     * On subsequent runs, it returns the only TextureManager object stored in the static field.
-     * @return A std::shared_ptr<TextureManager> indicates the TextureManager instance.
-     */
+	/**
+	  * The static method that controls the access to the TextureManager's singleton instance.
+	 * On the first run, it creates a singleton object and places it into the static field.
+	 * On subsequent runs, it returns the only TextureManager object stored in the static field.
+	 * @return A std::shared_ptr<TextureManager> indicates the TextureManager instance.
+	 */
 	static std::shared_ptr<TextureManager> getInstance();
 
 	/**
@@ -45,7 +45,7 @@ class TextureManager
 	 */
 	sf::Texture& getTextureRef(const std::string& texture_str);
 
-	protected:
+ protected:
 	/**
 	 * Hide the constructor of TextureManager class.
 	 */
@@ -54,7 +54,7 @@ class TextureManager
 	// A std::shared_ptr<TextureManager> object indicates the singleton instance of TextureManager.
 	static std::shared_ptr<TextureManager> m_texture_manager_instance;
 
-	private:
+ private:
 	// An unordered_map that uses each texture's string name as key and related texture object as value.
 	std::unordered_map<std::string, sf::Texture> m_str_texture_map;
 };

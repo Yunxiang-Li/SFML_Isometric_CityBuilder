@@ -41,7 +41,7 @@ void Game::switchState(std::unique_ptr<GameState> state_ptr)
 	this->pushState(std::move(state_ptr));
 }
 
-GameState* Game::peekState()
+GameState* Game::peekState() const
 {
 	if (m_state_stack.empty())
 		return nullptr;
@@ -61,17 +61,17 @@ void Game::gameLoop()
 		if (this->peekState() == nullptr)
 			continue;
 		// Else handle player's input and update current frame's behavior within current game state.
-	  	this->peekState()->inputProcess();
-	  	this->peekState()->update(delta_time);
+		this->peekState()->inputProcess();
+		this->peekState()->update(delta_time);
 		// Clear the game window with black color.
 		m_game_window.clear(sf::Color::Black);
 		// Render and display the current frame content.
-	  	this->peekState()->render(delta_time);
+		this->peekState()->render(delta_time);
 		m_game_window.display();
 	}
 }
 
 void Game::loadGameTextures()
 {
-  TextureManager::getInstance()->loadTexture(GAME_BACKGROUND_TEXTURE_NAME, GAME_BACKGROUND_TEXTURE_PATH);
+	TextureManager::getInstance()->loadTexture(GAME_BACKGROUND_TEXTURE_NAME, GAME_BACKGROUND_TEXTURE_PATH);
 }

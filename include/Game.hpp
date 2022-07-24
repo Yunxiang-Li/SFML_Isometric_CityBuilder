@@ -17,7 +17,7 @@ class GameState;
  */
 class Game
 {
-	public:
+ public:
 	/**
 	 * Constructor of Game class.
 	 */
@@ -49,7 +49,7 @@ class Game
 	 * Retrieve the top(current) game state as a unique pointer.
 	 * @return A std::unique_ptr indicates the top(current) game state.
 	 */
-	GameState* peekState();
+	GameState* peekState() const;
 
 	/**
 	 * Process the main game loop.
@@ -61,11 +61,11 @@ class Game
 	// A sf::Sprite object indicates the background sprite.
 	sf::Sprite m_background_sprite;
 
-	private:
-  	/**
-  	 * Load all game required textures.
-  	 */
-  	void loadGameTextures();
+ private:
+	/**
+	 * Load all game required textures.
+	 */
+	void loadGameTextures();
 
 	// A stack holds all GameState unique pointers.
 	std::stack<std::unique_ptr<GameState>> m_state_stack;

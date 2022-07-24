@@ -8,7 +8,7 @@
  */
 class MainGameState : public GameState
 {
-	public:
+ public:
 	/**
 	 * Constructor of MainGameState class.
 	 * @param game_ptr A std::unique_ptr<Game> object indicates the pointer of game object.
@@ -32,7 +32,7 @@ class MainGameState : public GameState
 	 */
 	virtual void inputProcess() override;
 
-	private:
+ private:
 	// A sf::View object indicates the game scene's 2D camera view.
 	sf::View m_main_game_view;
 	// A sf::View object indicates the game scene GUI's 2D camera view.

@@ -34,48 +34,49 @@ void MainMenuGameState::inputProcess()
 	while (m_game_ptr->m_game_window.pollEvent(event))
 	{
 		// Check the event type.
-		switch(event.type)
+		switch (event.type)
 		{
 			// If user click the top right close button, then close the game window.
-			case sf::Event::Closed:
-			{
-				m_game_ptr->m_game_window.close();
-				break;;
-			}
+		case sf::Event::Closed:
+		{
+			m_game_ptr->m_game_window.close();
+			break;;
+		}
 			// If user resize the window size.
-			case sf::Event::Resized:
-			{
-				// Reset game view's size and center.
-				m_game_view.setSize(event.size.width, event.size.height);
-			  	m_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5);
-				// Set background sprite's position to window position (0, 0) related world position inside default(main menu) view.
-				m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0, 0)));
-				// Set background sprite to fill the entire window.
-				m_game_ptr->m_background_sprite.setScale(
-					float(event.size.width) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().x),
-					float(event.size.height) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().y));
-				break;
-			}
+		case sf::Event::Resized:
+		{
+			// Reset game view's size and center.
+			m_game_view.setSize(event.size.width, event.size.height);
+			m_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5);
+			// Set background sprite's position to window position (0, 0) related world position inside default(main menu) view.
+			m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0,
+				0)));
+			// Set background sprite to fill the entire window.
+			m_game_ptr->m_background_sprite.setScale(
+				float(event.size.width) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().x),
+				float(event.size.height) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().y));
+			break;
+		}
 			// If user pressed a specific key then handle it.
-			case sf::Event::KeyPressed:
-			{
-				// If user pressed escape key, then close the game window.
-				if (event.key.code == sf::Keyboard::Escape)
-					m_game_ptr->m_game_window.close();
+		case sf::Event::KeyPressed:
+		{
+			// If user pressed escape key, then close the game window.
+			if (event.key.code == sf::Keyboard::Escape)
+				m_game_ptr->m_game_window.close();
 				// If user pressed space key, then load the main game scene.
-				else if (event.key.code == sf::Keyboard::Space)
-				  this->loadGame();
-				break;
-			}
-			default:
-				break;
+			else if (event.key.code == sf::Keyboard::Space)
+				this->loadGame();
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
 
 void MainMenuGameState::loadGame()
 {
-  // Create a MainGameState object and push it into the state stack.
-  MainGameState main_menu_game_state(m_game_ptr);
-  m_game_ptr->pushState(std::make_unique<MainGameState>(main_menu_game_state));
+	// Create a MainGameState object and push it into the state stack.
+	MainGameState main_menu_game_state(m_game_ptr);
+	m_game_ptr->pushState(std::make_unique<MainGameState>(main_menu_game_state));
 }

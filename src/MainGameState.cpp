@@ -29,41 +29,42 @@ void MainGameState::inputProcess()
 	while (m_game_ptr->m_game_window.pollEvent(event))
 	{
 		// Check the event type.
-		switch(event.type)
+		switch (event.type)
 		{
 			// If user click the top right close button, then close the game window.
-			case sf::Event::Closed:
-			{
-				m_game_ptr->m_game_window.close();
-				break;;
-			}
+		case sf::Event::Closed:
+		{
+			m_game_ptr->m_game_window.close();
+			break;;
+		}
 			// If user resize the window size.
-			case sf::Event::Resized:
-			{
-				// Reset main menu view and GUI view's size and center.
-				m_main_game_view.setSize(event.size.width, event.size.height);
-				m_gui_view.setSize(event.size.width, event.size.height);
-			  	//m_main_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
-			  	//m_gui_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
-
-				// Set background sprite's position to window position (0, 0) related world position inside GUI view.
-				m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0, 0), m_gui_view));
-				// Set background sprite to fill the entire window.
-				m_game_ptr->m_background_sprite.setScale(
-					float(event.size.width) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().x),
-					float(event.size.height) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().y));
-				break;
-			}
+		case sf::Event::Resized:
+		{
+			// Reset main menu view and GUI view's size and center.
+			m_main_game_view.setSize(event.size.width, event.size.height);
+			m_gui_view.setSize(event.size.width, event.size.height);
+			//m_main_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
+			//m_gui_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
+			// Set background sprite's position to window position (0, 0) related world position inside GUI view.
+			m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0,
+					0),
+				m_gui_view));
+			// Set background sprite to fill the entire window.
+			m_game_ptr->m_background_sprite.setScale(
+				float(event.size.width) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().x),
+				float(event.size.height) / float(m_game_ptr->m_background_sprite.getTexture()->getSize().y));
+			break;
+		}
 			// If user pressed a specific key then handle it.
-			case sf::Event::KeyPressed:
-			{
-				// If user pressed escape key, then close the game window.
-				if (event.key.code == sf::Keyboard::Escape)
-					m_game_ptr->m_game_window.close();
-				break;
-			}
-			default:
-				break;
+		case sf::Event::KeyPressed:
+		{
+			// If user pressed escape key, then close the game window.
+			if (event.key.code == sf::Keyboard::Escape)
+				m_game_ptr->m_game_window.close();
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
