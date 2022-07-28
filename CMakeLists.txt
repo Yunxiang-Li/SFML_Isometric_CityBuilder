@@ -28,7 +28,7 @@ find_package(SFML 2.5 COMPONENTS graphics window network audio REQUIRED)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Add the executable of the program
-add_executable(SFML_CityBuilder src/main.cpp src/MainMenuGameState.cpp src/Game.cpp src/TextureManager.cpp src/MainGameState.cpp src/Animation.cpp src/AnimationHandler.cpp)
+add_executable(SFML_CityBuilder src/main.cpp src/MainMenuGameState.cpp src/Game.cpp src/TextureManager.cpp src/MainGameState.cpp src/Animation.cpp src/AnimationHandler.cpp src/Tile.cpp)
 
 # Set linked libraries
 target_link_libraries(SFML_CityBuilder PRIVATE

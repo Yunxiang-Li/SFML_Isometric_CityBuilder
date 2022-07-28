@@ -32,8 +32,8 @@ class AnimationHandler
 	void add_anim(Animation& anim_ref);
 
 	/**
-	 * Update the current frame of animation. dt is the elapsed time since last update function call.
-	 * @param dt A const float indicates the elapsed time since last update call
+	 * Update the current frame of animation. dt is the elapsed time since last chanceLevelUp function call.
+	 * @param dt A const float indicates the elapsed time since last chanceLevelUp call
 	 */
 	void update(const float dt);
 

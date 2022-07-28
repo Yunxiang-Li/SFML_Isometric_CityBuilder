@@ -8,6 +8,7 @@
 // Include for sf::RenderWindow.
 #include <SFML/Graphics.hpp>
 #include "TextureManager.hpp"
+#include "Tile.hpp"
 
 // Forward declaration.
 class GameState;
@@ -60,12 +61,21 @@ class Game
 	sf::RenderWindow m_game_window;
 	// A sf::Sprite object indicates the background sprite.
 	sf::Sprite m_background_sprite;
+	// Indicates each tile object's half width in pixel.
+	constexpr static int m_tile_half_width_pixel{8};
+	// Holds each tile type's string name as key, related tile object as value.
+	std::unordered_map<std::string, Tile> m_str_tile_map;
 
  private:
 	/**
 	 * Load all game required textures.
 	 */
 	void loadGameTextures();
+
+	/**
+	 * Create and store all 7 types of tile objects.
+	 */
+	void loadTiles();
 
 	// A stack holds all GameState unique pointers.
 	std::stack<std::unique_ptr<GameState>> m_state_stack;
