@@ -34,7 +34,7 @@ class MainGameState : public GameState
 
  private:
 	// A sf::View object indicates the game scene's 2D camera view.
-	sf::View m_main_game_view;
+	sf::View m_view;
 	// A sf::View object indicates the game scene GUI's 2D camera view.
 	sf::View m_gui_view;
 };

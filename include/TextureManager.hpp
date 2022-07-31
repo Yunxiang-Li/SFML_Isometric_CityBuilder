@@ -52,7 +52,7 @@ class TextureManager
 	TextureManager() = default;
 
 	// A std::shared_ptr<TextureManager> object indicates the singleton instance of TextureManager.
-	static std::shared_ptr<TextureManager> m_texture_manager_instance;
+	static std::shared_ptr<TextureManager> m_instance;
 
  private:
 	// An unordered_map that uses each texture's string name as key and related texture object as value.

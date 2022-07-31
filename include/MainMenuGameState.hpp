@@ -39,7 +39,7 @@ class MainMenuGameState : public GameState
 	*/
 	void loadGame();
 
-	// A sf::View object indicates the game's view.
-	sf::View m_game_view;
+	// A sf::View object indicates the main menu's view.
+	sf::View m_view;
 };
 #endif // MAINMENUGAMESTATE_HPP

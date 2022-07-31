@@ -6,7 +6,7 @@ MainGameState::MainGameState(std::shared_ptr<Game> game_ptr)
 	m_game_ptr = std::move(game_ptr);
 	// Set main game view and GUI view's size.
 	sf::Vector2f game_view_size = sf::Vector2f(m_game_ptr->m_game_window.getSize());
-	m_main_game_view.setSize(game_view_size);
+	m_view.setSize(game_view_size);
 	m_gui_view.setSize(game_view_size);
 }
 
@@ -41,9 +41,9 @@ void MainGameState::inputProcess()
 		case sf::Event::Resized:
 		{
 			// Reset main menu view and GUI view's size and center.
-			m_main_game_view.setSize(event.size.width, event.size.height);
+			m_view.setSize(event.size.width, event.size.height);
 			m_gui_view.setSize(event.size.width, event.size.height);
-			//m_main_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
+			//m_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
 			//m_gui_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5f);
 			// Set background sprite's position to window position (0, 0) related world position inside GUI view.
 			m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0,

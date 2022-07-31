@@ -47,7 +47,7 @@ class Game
 	void switchState(std::unique_ptr<GameState> state_ptr);
 
 	/**
-	 * Retrieve the top(current) game state as a unique pointer.
+	 * Retrieve the top(current) game state as a pointer of GameState object.
 	 * @return A std::unique_ptr indicates the top(current) game state.
 	 */
 	GameState* peekState() const;

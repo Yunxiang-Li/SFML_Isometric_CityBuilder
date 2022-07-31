@@ -4,7 +4,6 @@
 
 #include "AnimationHandler.hpp"
 #include "TileType.hpp"
-#include <array>
 
 /**
  * This class represents all behaviors of one Tile object.
@@ -37,8 +36,7 @@ class Tile
 	Tile(const unsigned int tile_half_width_pixel, const unsigned int tile_height_num, sf::Texture& texture,
 		std::vector<Animation> animation_vec, const TileType& tileType, const unsigned int cost,
 		const unsigned int curr_level_population_limit, const unsigned int max_level) : m_tileType(tileType),
-		m_region_id_arr({{0}}), m_cost(cost), m_curr_level_population_limit(curr_level_population_limit),
-		m_max_level(max_level)
+		m_cost(cost), m_curr_level_population_limit(curr_level_population_limit), m_max_level(max_level)
 		{
 			/* Since one texture contains at most 4 tiles, we need to set up the top left point of the current
 			 * tile sprite according to the whole texture.*/
@@ -65,9 +63,8 @@ class Tile
 	void render(sf::RenderWindow& render_window, float dt);
 
 	/**
-	 * If the population is at the maximum value for the tile,
-     * there is a small chance that the tile will increase its
-     * building stage.
+	 * If the population is at the maximum value for the tile, there is a small chance that the tile will increase its
+     * building level.
 	 */
 	void chanceLevelUp();
 
@@ -84,7 +81,7 @@ class Tile
 	unsigned int m_level{0};
 	/* An array of multiple elements indicate region IDs of the Tile object. These IDs indicate different meanings
 	 * such as road connection, electricity available and has water or not.*/
-	std::array<unsigned int, 2> m_region_id_arr;
+	unsigned int m_region_id_arr[1]{ 0};
 	// Placement cost of each tile.
 	unsigned int m_cost;
 	// Current residents inside the tile.

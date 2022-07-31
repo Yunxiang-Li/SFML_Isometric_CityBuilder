@@ -7,17 +7,17 @@ MainMenuGameState::MainMenuGameState(std::shared_ptr<Game> game_ptr)
 	m_game_ptr = game_ptr;
 	// Set game view's size to be same as current window's size.
 	sf::Vector2f main_menu_view_size = sf::Vector2f(m_game_ptr->m_game_window.getSize());
-	m_game_view.setSize(main_menu_view_size);
+	m_view.setSize(main_menu_view_size);
 
 	// Set game view's center(origin of all transformations) to be the center position of the window(640x360 here).
 	main_menu_view_size *= 0.5f;
-	m_game_view.setCenter(main_menu_view_size);
+	m_view.setCenter(main_menu_view_size);
 }
 
 void MainMenuGameState::render(const float dt)
 {
 	// Set game window's view to be game view, clear previous content and render game background sprite inside game view.
-	m_game_ptr->m_game_window.setView(m_game_view);
+	m_game_ptr->m_game_window.setView(m_view);
 	m_game_ptr->m_game_window.clear(sf::Color::Black);
 	m_game_ptr->m_game_window.draw(m_game_ptr->m_background_sprite);
 }
@@ -46,8 +46,8 @@ void MainMenuGameState::inputProcess()
 		case sf::Event::Resized:
 		{
 			// Reset game view's size and center.
-			m_game_view.setSize(event.size.width, event.size.height);
-			m_game_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5);
+			m_view.setSize(event.size.width, event.size.height);
+			m_view.setCenter(event.size.width * 0.5f, event.size.height * 0.5);
 			// Set background sprite's position to window position (0, 0) related world position inside default(main menu) view.
 			m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0,
 				0)));

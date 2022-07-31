@@ -1,14 +1,14 @@
 #include "TextureManager.hpp"
 
-std::shared_ptr<TextureManager> TextureManager::m_texture_manager_instance = nullptr;
+std::shared_ptr<TextureManager> TextureManager::m_instance = nullptr;
 
 std::shared_ptr<TextureManager> TextureManager::getInstance()
 {
 	// For the first call, create a new TextureManager object and set it inside the std::shared_ptr.
-	if (!m_texture_manager_instance)
-		m_texture_manager_instance.reset(new TextureManager);
+	if (!m_instance)
+		m_instance.reset(new TextureManager);
 	// For subsequent calls, return the already created one.
-	return m_texture_manager_instance;
+	return m_instance;
 }
 
 void TextureManager::loadTexture(const std::string& texture_name, const std::string& file_name)
