@@ -5,6 +5,7 @@
 #include "Tile.hpp"
 #include "unordered_map"
 
+// Define each tile object's half width in pixels.
 constexpr unsigned int TILE_HALF_WIDTH = 8;
 /**
  * This class contains a vector of Tile objects which is responsible for all game map behaviors.
@@ -66,6 +67,7 @@ class Map
 	 * @param tileType A TileType object indicates the type of tile object.
 	 */
 	void updateDirection(TileType tileType);
+
 	// Dimension of the map.
 	unsigned int m_width;
 	unsigned int m_height;
