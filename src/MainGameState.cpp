@@ -65,6 +65,8 @@ void MainGameState::inputProcess()
 			// Reset main menu view and GUI view's size.
 			m_view.setSize(event.size.width, event.size.height);
 			m_gui_view.setSize(event.size.width, event.size.height);
+			// Zoom main game view with previously stored zoom level since resize event will reset zoom level to 1.
+			m_view.zoom(m_zoom_level);
 			// Set background sprite's position to window position (0, 0) related world position inside GUI view.
 			m_game_ptr->m_background_sprite.setPosition(m_game_ptr->m_game_window.mapPixelToCoords(sf::Vector2i(0,
 					0),
@@ -83,7 +85,58 @@ void MainGameState::inputProcess()
 				m_game_ptr->m_game_window.close();
 			break;
 		}
-		//case sf::Event::MouseMoved
+		// When mouse moved, pan the camera.
+		case sf::Event::MouseMoved:
+		{
+			// Only process when player keep pressing the mouse middle button.
+			if (m_action_state == GameActionEnum::CAMERA_PANNING)
+			{
+				sf::Vector2f pos = sf::Vector2f(sf::Mouse::getPosition(m_game_ptr->m_game_window) -
+					m_prev_mouse_pos);
+				/* Main game view should move towards the opposite direction according to the zoom level since moving
+				 * a camera to the right is the same as moving everything else to the left, */
+				m_view.move(-1.f * pos * m_zoom_level);
+				// Update mouse position.
+				m_prev_mouse_pos = sf::Mouse::getPosition(m_game_ptr->m_game_window);
+			}
+			break;
+		}
+		// Check mouse button pressed cases.
+		case sf::Event::MouseButtonPressed:
+		{
+			// Set current game state to camera panning when mouse middle button is pressed for the first time.
+			if (event.mouseButton.button == sf::Mouse::Middle)
+				if (m_action_state != GameActionEnum::CAMERA_PANNING)
+				{
+					m_action_state = GameActionEnum::CAMERA_PANNING;
+				}
+			break;
+		}
+		// Check mouse button released cases.
+		case sf::Event::MouseButtonReleased:
+		{
+			// If the mouse middle button is released then reset the current game state.
+			if (event.mouseButton.button == sf::Mouse::Middle)
+				m_action_state = GameActionEnum::NONE;
+			break;
+		}
+		// Check mouse wheel scroll cases.
+		case sf::Event::MouseWheelScrolled:
+		{
+			// If mouse wheel scroll downward, double the zoom level of game view(view bigger, object smaller).
+			if (event.mouseWheelScroll.delta < 0)
+			{
+				m_view.zoom(2.f);
+				m_zoom_level *= 2.f;
+			}
+			// If mouse wheel move upward, halve the zoom level of game view(view smaller, object bigger).
+			else
+			{
+				m_view.zoom(0.5f);
+				m_zoom_level *= 0.5f;
+			}
+			break;
+		}
 		default:
 			break;
 		}

@@ -44,9 +44,10 @@ class MainGameState : public GameState
 	GameActionEnum m_action_state;
 	// Indicates the main game scene's map.
 	Map m_game_map;
-	/* Keep track of mouse position when player presses mouse middle button. Then as the mouse moves away, if the middle
-	 * mouse button is still held down, the world(camera actually) will move too. */
-	sf::Vector2i m_camera_panning_mouse_pos;
+	/* Keep track of mouse position since last camera panning event. When player presses mouse middle button and moves
+	 * mouse at the same time, the world(game view) should also move towards the opposite direction and this position
+	 * should be updated. */
+	sf::Vector2i m_prev_mouse_pos;
 	/* Indicates the view's zoom level which will double or halve as the player scrolls the mouse wheel forward or
 	 * backward. */
 	float m_zoom_level;
