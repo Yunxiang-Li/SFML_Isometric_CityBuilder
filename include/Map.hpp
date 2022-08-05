@@ -16,7 +16,7 @@ class Map
 	/**
 	 * Constructor of Map class. Create a blank map.
 	 */
-	Map() : m_width(0), m_height(0), m_tile_half_width(TILE_HALF_WIDTH), m_region_num{0} {};
+	Map() : m_width(0), m_height(0), m_tile_half_width(TILE_HALF_WIDTH), m_region_num_arr{0} {};
 
 	/**
 	 * Four parameter constructor of Map class. Create the map from a file.
@@ -57,17 +57,18 @@ class Map
 
 	/**
 	 * Checks if one position in the map is connected to another by only traversing tiles in the whitelist.
-	 * @param whitelist_vec A reference of const vector contains all different TileTypes that can make up the regions.
-	 * @param region_type An unsigned integer indicates the index of region's array stored inside Tile class.
-	 * Default value is 0.
+	 * @param whitelist_vec A reference of const vector contains all different TileTypes that can make up the regions
+	 * (ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL).
+	 * @param region_type An unsigned integer indicates the index of Tile class's member m_region_arr.
+	 * Default value is 0. A certain region can have tiles of different tile types.
 	 */
-	void findConnectedRegions(const std::vector<TileType>& whitelist_vec, unsigned int region_type = 0);
+	void findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, unsigned int region_type = 0);
 
 	/**
 	 * Update the direction of directional tiles(roads, water) so that they face the correct direction.
-	 * @param tileType A TileType object indicates the type of tile object.
+	 * @param tileType A TileTypeEnum object indicates the type of tile object.
 	 */
-	void updateDirection(TileType tileType);
+	void updateDirection(TileTypeEnum tileType);
 
 	// Dimension of the map.
 	unsigned int m_width;
@@ -80,19 +81,20 @@ class Map
 	unsigned int m_tile_half_width;
 	// TODO:
 	unsigned int m_selected_num;
-	// An unsigned int array, index indicates the region type, result indicates the related region.
-	unsigned int m_region_num[1];
+	// An unsigned int array, index indicates the region type, result indicates the related regions' number.
+	unsigned int m_region_num_arr[1];
 
  private:
 	/**
 	 * Split the map into different regions and region_idx them according to what region they fall in.
-	 * @param whitelist_vec A const reference of const vector contains all different TileTypes that can make up the regions.
+	 * @param whitelist_vec A const reference of const vector contains all different TileTypes that can make up the
+	 * regions(ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL).
 	 * @param pos A sf::Vector2i object indicates the position of current tile object.
 	 * @param region_idx An unsigned integer indicates a certain region.
-	 * @param region_type An unsigned integer indicates a specific region type which is also the index of region id
-	 * array that stored inside Tile class. The default value is zero.
+	 * @param region_type An unsigned integer indicates the index of Tile class's member m_region_arr. The default value
+	 * is zero.  A certain region can have tiles of different tile types.
 	 */
-	void DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
+	void DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
 		unsigned int region_type = 0);
 };
 

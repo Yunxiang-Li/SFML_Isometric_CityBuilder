@@ -46,33 +46,33 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 		m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
 
 		// Read and store each tile object's tile type.
-		TileType tileType;
-		input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileType));
+		TileTypeEnum tileType;
+		input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileTypeEnum));
 
 		// Set up each tile object's texture according to its tile type.
 		switch (tileType)
 		{
-		case TileType::VOID:
-		case TileType::GRASS:
-			m_tiles_vec.emplace_back(str_tile_map.at("grass"));
-			break;
-		case TileType::FOREST:
+		case TileTypeEnum::VOID:
+		case TileTypeEnum::FOREST:
 			m_tiles_vec.emplace_back(str_tile_map.at("forest"));
 			break;
-		case TileType::WATER:
+		case TileTypeEnum::WATER:
 			m_tiles_vec.emplace_back(str_tile_map.at("water"));
 			break;
-		case TileType::RESIDENTIAL:
+		case TileTypeEnum::RESIDENTIAL:
 			m_tiles_vec.emplace_back(str_tile_map.at("residential"));
 			break;
-		case TileType::COMMERCIAL:
+		case TileTypeEnum::COMMERCIAL:
 			m_tiles_vec.emplace_back(str_tile_map.at("commercial"));
 			break;
-		case TileType::INDUSTRIAL:
+		case TileTypeEnum::INDUSTRIAL:
 			m_tiles_vec.emplace_back(str_tile_map.at("industrial"));
 			break;
-		case TileType::ROAD:
+		case TileTypeEnum::ROAD:
 			m_tiles_vec.emplace_back(str_tile_map.at("road"));
+			break;
+		case TileTypeEnum::GRASS:
+			m_tiles_vec.emplace_back(str_tile_map.at("grass"));
 			break;
 		default:
 			break;
@@ -81,7 +81,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 		// Set up each tile object's current level, region id array, current population and total production.
 		Tile& curr_tile_ref = m_tiles_vec.back();
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_level)), sizeof(unsigned int));
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_type_arr)), sizeof(unsigned int) * 1);
+		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_arr)), sizeof(unsigned int) * 1);
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_population)), sizeof(double));
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_total_production)), sizeof(float));
 
@@ -98,9 +98,9 @@ void Map::save(const std::string& file_name)
 	// Store each tile object's tile type, current level, region id array, current population and total production.
 	for (auto& each_tile: m_tiles_vec)
 	{
-		output_file.write(reinterpret_cast<char*>(&(each_tile.m_tileType)), sizeof(TileType));
+		output_file.write(reinterpret_cast<char*>(&(each_tile.m_tileType)), sizeof(TileTypeEnum));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_level)), sizeof(unsigned int));
-		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_type_arr)), sizeof(unsigned int) * 3);
+		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_arr)), sizeof(unsigned int) * 3);
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_population)), sizeof(double));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_total_production)), sizeof(float));
 	}
@@ -116,7 +116,7 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 		for (int x = 0; x < m_width; ++x)
 		{
 			// Get each isometric tile's position.
-			pos.x = m_tile_half_width * (x - y);
+			pos.x = m_tile_half_width * (x - y) + m_width * m_tile_half_width;
 			pos.y = m_tile_half_width * (x + y) * 0.5;
 			// Bind each tile's position with related element inside m_tiles_vec.
 			m_tiles_vec[y * m_width + x].m_sprite.setPosition(pos);
@@ -125,36 +125,38 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 		}
 }
 
-void Map::findConnectedRegions(const std::vector<TileType>& whitelist_vec, unsigned int region_type)
+void Map::findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, unsigned int region_type)
 {
 	// Indicates the number of input region type, starts from one.
-	unsigned int region_idx{1};
+	unsigned int region_num{1};
 
-	// Reset each tile object's region id array's input region_type's related value to zero.
+	/* Reset each tile object's region array's input region_type's related value to zero( which means not inside relate
+	 * region for now). */
 	for (auto& tile : m_tiles_vec)
-		tile.m_region_type_arr[region_type] = 0;
+		tile.m_region_arr[region_type] = 0;
 
 	// Iterate through all tile objects.
 	for (int y = 0; y < m_height; ++y)
 		for (int x = 0; x < m_width; ++x)
 		{
 			// Check if current tile object's tile type is in the white list(can make up a region).
-			bool is_tile_type_match{ false};
+			bool is_tile_type_match{false};
 			for (const auto& tileType : whitelist_vec)
 				if (tileType ==  m_tiles_vec[y * m_width + x].m_tileType)
 				{
 					is_tile_type_match = true;
 					break;
 				}
-			/* If the current Tile object has not yet been assigned a region_idx and the tile type matches,
-			 * call DFS function. */
-			if (m_tiles_vec[y * m_width + x].m_region_type_arr[region_type] == 0 && is_tile_type_match)
-				DFS(whitelist_vec, sf::Vector2i{x, y}, region_idx++, region_type);
+			/* If the current Tile object has not yet been assigned a region_num and the tile type matches,
+			 * call DFS function. This means each DFS call will create a new region. */
+			if (m_tiles_vec[y * m_width + x].m_region_arr[region_type] == 0 && is_tile_type_match)
+				DFS(whitelist_vec, sf::Vector2i{x, y}, region_num++, region_type);
 		}
-	m_region_num[region_type] = region_idx;
+	// Store the input region type's region number.
+	m_region_num_arr[region_type] = region_num;
 }
 
-void Map::updateDirection(TileType tileType)
+void Map::updateDirection(TileTypeEnum tileType)
 {
 	for (int y = 0; y < m_height; ++y)
 	{
@@ -243,7 +245,7 @@ void Map::updateDirection(TileType tileType)
 	}
 }
 
-void Map::DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
+void Map::DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
 	unsigned int region_type)
 {
 	// Check if input position is valid or not.
@@ -253,11 +255,11 @@ void Map::DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsi
 		return;
 
 	// Check if related tile was already visited before or not.
-	if (m_tiles_vec[pos.y * m_width + pos.x].m_region_type_arr[0] != 0)
+	if (m_tiles_vec[pos.y * m_width + pos.x].m_region_arr[0] != 0)
 		return;
 
 	// Check if current tile object's tile type is in the white list(can make up a region).
-	bool is_tile_type_match{ false};
+	bool is_tile_type_match{false};
 	for (const auto& tileType : whitelist_vec)
 		if (tileType == m_tiles_vec[pos.y * m_width + pos.x].m_tileType)
 		{
@@ -268,8 +270,8 @@ void Map::DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsi
 	if (!is_tile_type_match)
 		return;
 
-	// Otherwise assigns current Tile's region id array's related region type a unique region_idx.
-	m_tiles_vec[pos.y * m_width + pos.x].m_region_type_arr[region_type] = region_idx;
+	// Otherwise assigns current Tile's region array's related region type's region a unique region_idx.
+	m_tiles_vec[pos.y * m_width + pos.x].m_region_arr[region_type] = region_idx;
 
 	// Call DFS function recursively on current tile object's four adjacent tile objects.
 	DFS(whitelist_vec, pos + sf::Vector2i(0, 1), region_idx, region_type);

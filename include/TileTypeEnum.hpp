@@ -5,7 +5,7 @@
 /**
  * This enum class contains all 4 types of tiles and 3 types of in-game zones.
  */
-enum class TileType
+enum class TileTypeEnum
 {
 	VOID,
 	GRASS,

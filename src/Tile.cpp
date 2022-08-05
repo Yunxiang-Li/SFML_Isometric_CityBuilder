@@ -20,8 +20,8 @@ void Tile::chanceLevelUp()
 {
 	/* Check if current tile is a zone tile, and its current population reaches current maximum population,
 	 * and also current tile's level is still lower than the max level. */
-	if ((m_tileType == TileType::RESIDENTIAL || m_tileType == TileType::COMMERCIAL
-	|| m_tileType == TileType::INDUSTRIAL) && (m_population == m_curr_level_population_limit * (m_level + 1))
+	if ((m_tileType == TileTypeEnum::RESIDENTIAL || m_tileType == TileTypeEnum::COMMERCIAL
+	|| m_tileType == TileTypeEnum::INDUSTRIAL) && (m_population == m_curr_level_population_limit * (m_level + 1))
 	&& m_level < m_max_level)
 	{
 		/* (rand() % int(RAND_BASE_NUM) will range between 0 and 999. For LEVEL_BASE_NUM / (m_level + 1),
@@ -39,29 +39,29 @@ std::string Tile::getCost() const
 	return std::to_string(m_cost);
 }
 
-std::string tileTypeToStr(TileType tile_type)
+std::string tileTypeToStr(TileTypeEnum tile_type)
 {
 	// A string store the result.
 	std::string res_str{};
 	// Check each case, for unlisted input, use Void to represent.
 	switch (tile_type)
 	{
-		case TileType::INDUSTRIAL:
+		case TileTypeEnum::INDUSTRIAL:
 			res_str = "Industrial";
 			break;
-		case TileType::COMMERCIAL:
+		case TileTypeEnum::COMMERCIAL:
 			res_str = "Commercial";
 			break;
-		case TileType::RESIDENTIAL:
+		case TileTypeEnum::RESIDENTIAL:
 			res_str = "Residential";
 			break;
-		case TileType::GRASS:
+		case TileTypeEnum::GRASS:
 			res_str = "Grass";
 			break;
-		case TileType::FOREST:
+		case TileTypeEnum::FOREST:
 			res_str = "Forest";
 			break;
-		case TileType::WATER:
+		case TileTypeEnum::WATER:
 			res_str = "Water";
 			break;
 		default:

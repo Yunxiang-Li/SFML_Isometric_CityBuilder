@@ -3,6 +3,8 @@
 #define MAINGAMESTATE_HPP
 
 #include "GameState.hpp"
+#include "GameActionEnum.h"
+#include "Map.hpp"
 
 /**
  * This class inherits from the virtual base GameState class and represents the main game state.
@@ -38,6 +40,16 @@ class MainGameState : public GameState
 	sf::View m_view;
 	// A sf::View object indicates the game scene GUI's 2D camera view.
 	sf::View m_gui_view;
+	// Indicates player's current action inside the main game scene.
+	GameActionEnum m_action_state;
+	// Indicates the main game scene's map.
+	Map m_game_map;
+	/* Keep track of mouse position when player presses mouse middle button. Then as the mouse moves away, if the middle
+	 * mouse button is still held down, the world(camera actually) will move too. */
+	sf::Vector2i m_camera_panning_mouse_pos;
+	/* Indicates the view's zoom level which will double or halve as the player scrolls the mouse wheel forward or
+	 * backward. */
+	float m_zoom_level;
 };
 
 #endif //MAINGAMESTATE_HPP

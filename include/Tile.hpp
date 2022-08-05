@@ -3,7 +3,7 @@
 #define TILE_HPP
 
 #include "AnimationHandler.hpp"
-#include "TileType.hpp"
+#include "TileTypeEnum.hpp"
 
 /**
  * This class represents all behaviors of one Tile object.
@@ -11,11 +11,11 @@
 class Tile
 {
 	/**
-	 * A friend function to transform input TileType into related string.
-	 * @param tile_type A TileType object indicates the input TileType.
+	 * A friend function to transform input TileTypeEnum into related string.
+	 * @param tile_type A TileTypeEnum object indicates the input TileTypeEnum.
 	 * @return A std::string indicates the related string.
 	 */
-	friend std::string tileTypeToStr(TileType tile_type);
+	friend std::string tileTypeToStr(TileTypeEnum tile_type);
  public:
 	/**
 	 *	Default constructor.
@@ -27,14 +27,14 @@ class Tile
 	 * @param tile_height_num A const unsigned int represents the number of half tile width indicates the tile's height.
 	 * @param texture A reference of sf::Texture indicates the texture of all related different levels' tiles.
 	 * @param animation_vec A std::vector<Animation> indicates the tile object's related animation.
-	 * @param tileType A reference of enum TileType object indicates the tile type.
+	 * @param tileType A reference of enum TileTypeEnum object indicates the tile type.
 	 * @param cost A const unsigned int indicates the cost to placement the tile object.
 	 * @param curr_level_population_limit A const unsigned int indicates the maximum possible population value for
 	 * current level of the tile.
 	 * @param max_level A const unsigned int indicates the maximum possible level of the tile.
 	 */
 	Tile(const unsigned int tile_half_width_pixel, const unsigned int tile_height_num, sf::Texture& texture,
-		std::vector<Animation> animation_vec, const TileType& tileType, const unsigned int cost,
+		std::vector<Animation> animation_vec, const TileTypeEnum& tileType, const unsigned int cost,
 		const unsigned int curr_level_population_limit, const unsigned int max_level) : m_tileType(tileType),
 		m_cost(cost), m_curr_level_population_limit(curr_level_population_limit), m_max_level(max_level)
 		{
@@ -75,14 +75,14 @@ class Tile
 	std::string getCost() const;
 
 	// Current Tile object's tile type.
-	TileType m_tileType{};
+	TileTypeEnum m_tileType{};
 	/* The current level of Tile object which affects Tile object's appearance. For Zone(Road, Industrial and
 	 * Commercial) tiles, this value will also affect tile's maximum population. */
 	unsigned int m_level{0};
-	/* An array of multiple elements indicate region IDs of the Tile object. These IDs indicate different meanings
-	 * such as road connection, electricity available and has water or not. 0 value means no region assigned so far,
-	 * non-zero value means region assigned. */
-	unsigned int m_region_type_arr[1]{ 0};
+	/* Indicates current tile object's related region's index, tiles in the same region are connected and can have
+	 * different tile types. First element is used for transport.  m_region_arr[region_type] = region_idx means current
+	 * tile object is inside the region_idxth's region of region_type. */
+	unsigned int m_region_arr[1]{0};
 	// Placement cost of each tile.
 	unsigned int m_cost;
 	// Current residents inside the tile.
