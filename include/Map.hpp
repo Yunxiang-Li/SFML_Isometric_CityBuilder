@@ -58,9 +58,10 @@ class Map
 	/**
 	 * Checks if one position in the map is connected to another by only traversing tiles in the whitelist.
 	 * @param whitelist_vec A reference of const vector contains all different TileTypes that can make up the regions.
-	 * @param type An unsigned integer indicates the index of region's array stored inside Tile class.
+	 * @param region_type An unsigned integer indicates the index of region's array stored inside Tile class.
+	 * Default value is 0.
 	 */
-	void findConnectedRegions(const std::vector<TileType>& whitelist_vec, unsigned int type);
+	void findConnectedRegions(const std::vector<TileType>& whitelist_vec, unsigned int region_type = 0);
 
 	/**
 	 * Update the direction of directional tiles(roads, water) so that they face the correct direction.
@@ -84,13 +85,15 @@ class Map
 
  private:
 	/**
-	 * Split the map into different regions and label them according to what region they fall in.
-	 * @param whitelist_vec A reference of const vector contains all different TileTypes that can make up the regions.
+	 * Split the map into different regions and region_idx them according to what region they fall in.
+	 * @param whitelist_vec A const reference of const vector contains all different TileTypes that can make up the regions.
 	 * @param pos A sf::Vector2i object indicates the position of current tile object.
-	 * @param label An integer indicates the label of related region.
-	 * @param type An unsigned integer indicates the index of region id's array stored inside Tile class.
+	 * @param region_idx An unsigned integer indicates a certain region.
+	 * @param region_type An unsigned integer indicates a specific region type which is also the index of region id
+	 * array that stored inside Tile class. The default value is zero.
 	 */
-	void DFS(std::vector<TileType>& whitelist_vec, sf::Vector2i pos, int label, unsigned int type);
+	void DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
+		unsigned int region_type = 0);
 };
 
 #endif //MAP_HPP

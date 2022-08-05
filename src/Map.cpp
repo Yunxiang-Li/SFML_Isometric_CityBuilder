@@ -23,7 +23,6 @@ constexpr int TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 8;
 constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR = 9;
 constexpr int TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 10;
 
-
 Map::Map(const std::string& file_name, unsigned int width, unsigned int height,
 	std::unordered_map<std::string, Tile>& str_tile_map) : m_tile_half_width(TILE_HALF_WIDTH)
 {
@@ -51,38 +50,38 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 		input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileType));
 
 		// Set up each tile object's texture according to its tile type.
-		switch(tileType)
+		switch (tileType)
 		{
-			case TileType::VOID:
-			case TileType::GRASS:
-				m_tiles_vec.emplace_back(str_tile_map.at("grass"));
-				break;
-			case TileType::FOREST:
-				m_tiles_vec.emplace_back(str_tile_map.at("forest"));
-				break;
-			case TileType::WATER:
-				m_tiles_vec.emplace_back(str_tile_map.at("water"));
-				break;
-			case TileType::RESIDENTIAL:
-				m_tiles_vec.emplace_back(str_tile_map.at("residential"));
-				break;
-			case TileType::COMMERCIAL:
-				m_tiles_vec.emplace_back(str_tile_map.at("commercial"));
-				break;
-			case TileType::INDUSTRIAL:
-				m_tiles_vec.emplace_back(str_tile_map.at("industrial"));
-				break;
-			case TileType::ROAD:
-				m_tiles_vec.emplace_back(str_tile_map.at("road"));
-				break;
-			default:
-				break;
+		case TileType::VOID:
+		case TileType::GRASS:
+			m_tiles_vec.emplace_back(str_tile_map.at("grass"));
+			break;
+		case TileType::FOREST:
+			m_tiles_vec.emplace_back(str_tile_map.at("forest"));
+			break;
+		case TileType::WATER:
+			m_tiles_vec.emplace_back(str_tile_map.at("water"));
+			break;
+		case TileType::RESIDENTIAL:
+			m_tiles_vec.emplace_back(str_tile_map.at("residential"));
+			break;
+		case TileType::COMMERCIAL:
+			m_tiles_vec.emplace_back(str_tile_map.at("commercial"));
+			break;
+		case TileType::INDUSTRIAL:
+			m_tiles_vec.emplace_back(str_tile_map.at("industrial"));
+			break;
+		case TileType::ROAD:
+			m_tiles_vec.emplace_back(str_tile_map.at("road"));
+			break;
+		default:
+			break;
 		}
 
 		// Set up each tile object's current level, region id array, current population and total production.
 		Tile& curr_tile_ref = m_tiles_vec.back();
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_level)), sizeof(unsigned int));
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_id_arr)), sizeof(unsigned int) * 1);
+		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_type_arr)), sizeof(unsigned int) * 1);
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_population)), sizeof(double));
 		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_total_production)), sizeof(float));
 
@@ -97,11 +96,11 @@ void Map::save(const std::string& file_name)
 	output_file.open(file_name, std::ios::binary);
 
 	// Store each tile object's tile type, current level, region id array, current population and total production.
-	for (auto& each_tile : m_tiles_vec)
+	for (auto& each_tile: m_tiles_vec)
 	{
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_tileType)), sizeof(TileType));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_level)), sizeof(unsigned int));
-		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_id_arr)), sizeof(unsigned int) * 3);
+		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_type_arr)), sizeof(unsigned int) * 3);
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_population)), sizeof(double));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_total_production)), sizeof(float));
 	}
@@ -126,17 +125,46 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 		}
 }
 
+void Map::findConnectedRegions(const std::vector<TileType>& whitelist_vec, unsigned int region_type)
+{
+	// Indicates the number of input region type, starts from one.
+	unsigned int region_idx{1};
+
+	// Reset each tile object's region id array's input region_type's related value to zero.
+	for (auto& tile : m_tiles_vec)
+		tile.m_region_type_arr[region_type] = 0;
+
+	// Iterate through all tile objects.
+	for (int y = 0; y < m_height; ++y)
+		for (int x = 0; x < m_width; ++x)
+		{
+			// Check if current tile object's tile type is in the white list(can make up a region).
+			bool is_tile_type_match{ false};
+			for (const auto& tileType : whitelist_vec)
+				if (tileType ==  m_tiles_vec[y * m_width + x].m_tileType)
+				{
+					is_tile_type_match = true;
+					break;
+				}
+			/* If the current Tile object has not yet been assigned a region_idx and the tile type matches,
+			 * call DFS function. */
+			if (m_tiles_vec[y * m_width + x].m_region_type_arr[region_type] == 0 && is_tile_type_match)
+				DFS(whitelist_vec, sf::Vector2i{x, y}, region_idx++, region_type);
+		}
+	m_region_num[region_type] = region_idx;
+}
+
 void Map::updateDirection(TileType tileType)
 {
-	for(int y = 0; y < m_height; ++y)
+	for (int y = 0; y < m_height; ++y)
 	{
-		for(int x = 0; x < m_width; ++x)
+		for (int x = 0; x < m_width; ++x)
 		{
 			// Retrieve current position.
 			int pos = y * m_width + x;
 
 			// Check if current tile object's type matches the input.
-			if(m_tiles_vec[pos].m_tileType != tileType)
+			if (m_tiles_vec[pos].m_tileType != tileType)
 				continue;
 
 			/* Create a 2D 3X3 array(as a mimic of 9 isometric tiles' structure) to help the check.
@@ -152,74 +180,100 @@ void Map::updateDirection(TileType tileType)
 			 * The isometric sample represented by the adjacent array.
 			 * */
 
-			std::array<std::array<int, 3>, 3> adjacent_tiles_arr{{{0,0,0},{0,0,0},{0,0,0}}};
+			std::array<std::array<int, 3>, 3> adjacent_tiles_arr{{{ 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }}};
 
 			// Match with top tile object.
-			if(x > 0 && y > 0)
+			if (x > 0 && y > 0)
 				adjacent_tiles_arr[0][0] = (m_tiles_vec[(y - 1) * m_width + (x - 1)].m_tileType == tileType);
 			// Match with top left tile object.
-			if(y > 0)
+			if (y > 0)
 				adjacent_tiles_arr[0][1] = (m_tiles_vec[(y - 1) * m_width + x].m_tileType == tileType);
 			// Match with left tile object.
-			if(x < m_width - 1 && y > 0)
+			if (x < m_width - 1 && y > 0)
 				adjacent_tiles_arr[0][2] = (m_tiles_vec[(y - 1) * m_width + (x + 1)].m_tileType == tileType);
 			// Match with top right tile object.
-			if(x > 0)
+			if (x > 0)
 				adjacent_tiles_arr[1][0] = (m_tiles_vec[y * m_width + (x - 1)].m_tileType == tileType);
 			// Match with bottom left tile object.
-			if(x < m_width-1)
+			if (x < m_width - 1)
 				adjacent_tiles_arr[1][2] = (m_tiles_vec[y * m_width + (x + 1)].m_tileType == tileType);
 			// Match with right tile object.
-			if(x > 0 && y < m_height - 1)
+			if (x > 0 && y < m_height - 1)
 				adjacent_tiles_arr[2][0] = (m_tiles_vec[(y + 1) * m_width + (x - 1)].m_tileType == tileType);
 			// Match with bottom right tile object.
-			if(y < m_height - 1)
+			if (y < m_height - 1)
 				adjacent_tiles_arr[2][1] = (m_tiles_vec[(y + 1) * m_width + x].m_tileType == tileType);
 			// Match with bottom tile object.
-			if(x < m_width-1 && y < m_height - 1)
+			if (x < m_width - 1 && y < m_height - 1)
 				adjacent_tiles_arr[2][2] = (m_tiles_vec[(y + 1) * m_width + (x + 1)].m_tileType == tileType);
 
 			// Change the tile level depending on related adjacent elements' values.
-			if(adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1] &&
-			adjacent_tiles_arr[2][1])
+			if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1] &&
+				adjacent_tiles_arr[2][1])
 				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1])
+			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1])
 				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_DIR;
-			else if(adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[2][1])
-				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR ;
-			else if(adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
+			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[2][1])
+				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
+			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
 				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
+			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
 				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2])
+			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2])
 				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_LEFT_DIR;
-			else if(adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1])
+			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1])
 				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
+			else if (adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
 				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[0][1] && adjacent_tiles_arr[1][2])
+			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[1][2])
 				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_LEFT_DIR;
-			else if(adjacent_tiles_arr[1][0] && adjacent_tiles_arr[0][1])
+			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[0][1])
 				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_DIR;
-			else if(adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
+			else if (adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
 				m_tiles_vec[pos].m_level = BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
-			else if(adjacent_tiles_arr[1][0])
+			else if (adjacent_tiles_arr[1][0])
 				m_tiles_vec[pos].m_level = TOP_RIGHT_DIR;
-			else if(adjacent_tiles_arr[1][2])
+			else if (adjacent_tiles_arr[1][2])
 				m_tiles_vec[pos].m_level = BOTTOM_LEFT_DIR;
-			else if(adjacent_tiles_arr[0][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_DIR ;
-			else if(adjacent_tiles_arr[2][1])
+			else if (adjacent_tiles_arr[0][1])
+				m_tiles_vec[pos].m_level = TOP_LEFT_DIR;
+			else if (adjacent_tiles_arr[2][1])
 				m_tiles_vec[pos].m_level = BOTTOM_RIGHT_DIR;
 		}
 	}
 }
 
-void Map::DFS(std::vector<TileType>& whitelist_vec, sf::Vector2i pos, int label, unsigned int type)
+void Map::DFS(const std::vector<TileType>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
+	unsigned int region_type)
 {
 	// Check if input position is valid or not.
 	if (pos.x < 0 || pos.x >= m_width)
 		return;
 	if (pos.y < 0 || pos.y >= m_height)
 		return;
+
+	// Check if related tile was already visited before or not.
+	if (m_tiles_vec[pos.y * m_width + pos.x].m_region_type_arr[0] != 0)
+		return;
+
+	// Check if current tile object's tile type is in the white list(can make up a region).
+	bool is_tile_type_match{ false};
+	for (const auto& tileType : whitelist_vec)
+		if (tileType == m_tiles_vec[pos.y * m_width + pos.x].m_tileType)
+		{
+			is_tile_type_match = true;
+			break;
+		}
+	// If not, no longer needs subsequent process.
+	if (!is_tile_type_match)
+		return;
+
+	// Otherwise assigns current Tile's region id array's related region type a unique region_idx.
+	m_tiles_vec[pos.y * m_width + pos.x].m_region_type_arr[region_type] = region_idx;
+
+	// Call DFS function recursively on current tile object's four adjacent tile objects.
+	DFS(whitelist_vec, pos + sf::Vector2i(0, 1), region_idx, region_type);
+	DFS(whitelist_vec, pos + sf::Vector2i(1, 0), region_idx, region_type);
+	DFS(whitelist_vec, pos + sf::Vector2i(-1, 0), region_idx, region_type);
+	DFS(whitelist_vec, pos + sf::Vector2i(0, -1), region_idx, region_type);
 }

@@ -3,6 +3,7 @@
 #define MAINGAMESTATE_HPP
 
 #include "GameState.hpp"
+
 /**
  * This class inherits from the virtual base GameState class and represents the main game state.
  */

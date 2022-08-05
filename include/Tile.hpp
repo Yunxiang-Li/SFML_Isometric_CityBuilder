@@ -80,8 +80,9 @@ class Tile
 	 * Commercial) tiles, this value will also affect tile's maximum population. */
 	unsigned int m_level{0};
 	/* An array of multiple elements indicate region IDs of the Tile object. These IDs indicate different meanings
-	 * such as road connection, electricity available and has water or not.*/
-	unsigned int m_region_id_arr[1]{ 0};
+	 * such as road connection, electricity available and has water or not. 0 value means no region assigned so far,
+	 * non-zero value means region assigned. */
+	unsigned int m_region_type_arr[1]{ 0};
 	// Placement cost of each tile.
 	unsigned int m_cost;
 	// Current residents inside the tile.
