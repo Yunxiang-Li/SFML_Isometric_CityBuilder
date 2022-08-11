@@ -2,7 +2,7 @@
 #include <iostream>
 #include "MainGameState.hpp"
 
-MainGameState::MainGameState(std::shared_ptr<Game> game_ptr)
+MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(GameActionEnum::NONE)
 {
 	// Store the game pointer.
 	m_game_ptr = std::move(game_ptr);
@@ -16,15 +16,13 @@ MainGameState::MainGameState(std::shared_ptr<Game> game_ptr)
 
 	// Store a 64x64 game map from file city_map.dat.
 	m_game_map = Map("../resources/binary/city_map.dat", 64, 64, m_game_ptr->m_str_tile_map);
-	// Initialize the zoom level.
-	m_zoom_level = 1.f;
 	// Center the camera on the isometric map.
 	sf::Vector2f camera_center(m_game_map.m_width, m_game_map.m_height * 0.5);
 	camera_center *= static_cast<float>(m_game_map.m_tile_half_width);
 	m_view.setCenter(camera_center);
 
-	// Initialize the action state to NONE.
-	m_action_state = GameActionEnum::NONE;
+	// Initialize current selected tile as a Grass tile.
+	m_curr_selected_tile_ptr = std::make_shared<Tile>(m_game_ptr->m_str_tile_map.at("grass"));
 }
 
 void MainGameState::render(const float dt)
@@ -85,31 +83,90 @@ void MainGameState::inputProcess()
 				m_game_ptr->m_game_window.close();
 			break;
 		}
-		// When mouse moved, pan the camera.
+		// Mouse moved condition.
 		case sf::Event::MouseMoved:
 		{
-			// Only process when player keep pressing the mouse middle button.
+			// Pan the camera when player keep pressing the mouse middle button.
 			if (m_action_state == GameActionEnum::CAMERA_PANNING)
 			{
 				sf::Vector2f pos = sf::Vector2f(sf::Mouse::getPosition(m_game_ptr->m_game_window) -
 					m_prev_mouse_pos);
 				/* Main game view should move towards the opposite direction according to the zoom level since moving
-				 * a camera to the right is the same as moving everything else to the left, */
+				 * a camera to the right is the same as moving everything else to the left. */
 				m_view.move(-1.f * pos * m_zoom_level);
 				// Update mouse position.
 				m_prev_mouse_pos = sf::Mouse::getPosition(m_game_ptr->m_game_window);
+			}
+			// Select a rectangle of tile objects when player keep pressing the mouse left button.
+			else if (m_action_state == GameActionEnum::TILE_SELECTING)
+			{
+				// Convert and store mouse's screen position to world position.
+				sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
+					(m_game_ptr->m_game_window), m_view);
+				// Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
+				m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
+					(mouse_pos.x / 2 * m_game_map.m_tile_half_width) - (0.5 * m_game_map.m_width);
+				m_select_start_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
+					(mouse_pos.x / 2 * m_game_map.m_tile_half_width) + (0.5 * m_game_map.m_width);
+
+				// Deselected all tiles first.
+				m_game_map.deselect_tiles();
+
+				/* If current selected tile is of grass type, then current player action is considered to destroy all
+				 * exist tiles rather than grass and water tiles. Therefore, grass and water tiles are considered as
+				 * black list and all other tiles should be selected. */
+				if (m_curr_selected_tile_ptr->m_tileType == TileTypeEnum::GRASS)
+					m_game_map.select(m_select_start_pos, m_select_end_pos, {TileTypeEnum::GRASS,
+																			 TileTypeEnum::WATER});
+				/* Else current player action is considered to build new tiles. And new tiles can only be built on the
+				 * grass tiles. Therefore, all other 6 type of tiles are considered as black list. */
+				else
+					m_game_map.select(m_select_start_pos, m_select_end_pos,
+						{TileTypeEnum::WATER, TileTypeEnum::ROAD, TileTypeEnum::FOREST,
+						 TileTypeEnum::RESIDENTIAL, TileTypeEnum::COMMERCIAL, TileTypeEnum::INDUSTRIAL});
 			}
 			break;
 		}
 		// Check mouse button pressed cases.
 		case sf::Event::MouseButtonPressed:
 		{
-			// Set current game state to camera panning when mouse middle button is pressed for the first time.
+			// when mouse middle button is pressed.
 			if (event.mouseButton.button == sf::Mouse::Middle)
+			{
+				// Switch to the camera panning state.
 				if (m_action_state != GameActionEnum::CAMERA_PANNING)
 				{
 					m_action_state = GameActionEnum::CAMERA_PANNING;
+					// Store mouse's current position.
+					m_prev_mouse_pos = sf::Mouse::getPosition(m_game_ptr->m_game_window);
 				}
+			}
+			// When mouse left button is pressed.
+			else if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				// Switch to the tile select state.
+				if (m_action_state != GameActionEnum::TILE_SELECTING)
+				{
+					m_action_state = GameActionEnum::TILE_SELECTING;
+					// Convert and store mouse's screen position to world position.
+					sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
+						(m_game_ptr->m_game_window), m_view);
+					// Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
+					m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
+						(mouse_pos.x / 2 * m_game_map.m_tile_half_width) - (0.5 * m_game_map.m_width);
+					m_select_start_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
+						(mouse_pos.x / 2 * m_game_map.m_tile_half_width) + (0.5 * m_game_map.m_width);
+				}
+			}
+			else if (event.mouseButton.button == sf::Mouse::Right)
+			{
+				// Switch to the none state and de-select all exist tiles.
+				if (m_action_state == GameActionEnum::TILE_SELECTING)
+				{
+					m_action_state = GameActionEnum::NONE;
+					m_game_map.deselect_tiles();
+				}
+			}
 			break;
 		}
 		// Check mouse button released cases.
@@ -118,6 +175,15 @@ void MainGameState::inputProcess()
 			// If the mouse middle button is released then reset the current game state.
 			if (event.mouseButton.button == sf::Mouse::Middle)
 				m_action_state = GameActionEnum::NONE;
+			else if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				// Switch to the none state and de-select all exist tiles.
+				if (m_action_state == GameActionEnum::TILE_SELECTING)
+				{
+					m_action_state = GameActionEnum::NONE;
+					m_game_map.deselect_tiles();
+				}
+			}
 			break;
 		}
 		// Check mouse wheel scroll cases.

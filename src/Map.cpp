@@ -24,7 +24,7 @@ constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR = 9;
 constexpr int TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 10;
 
 Map::Map(const std::string& file_name, unsigned int width, unsigned int height,
-	std::unordered_map<std::string, Tile>& str_tile_map) : m_tile_half_width(TILE_HALF_WIDTH)
+	std::unordered_map<std::string, Tile>& str_tile_map)
 {
 	this->load(file_name, width, height, str_tile_map);
 }
@@ -44,6 +44,8 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 	{
 		// Set each tile object's initial production to be 255.
 		m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
+		// Initialize each selected tile's condition to zero(not selected).
+		m_selected_tiles_condition_vec.emplace_back(0);
 
 		// Read and store each tile object's tile type.
 		TileTypeEnum tileType;
@@ -115,11 +117,18 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 	for (int y = 0; y < m_height; ++y)
 		for (int x = 0; x < m_width; ++x)
 		{
-			// Get each isometric tile's position.
+			// Get each isometric tile's position(tile coordinate to screen coordinate).
 			pos.x = m_tile_half_width * (x - y) + m_width * m_tile_half_width;
 			pos.y = m_tile_half_width * (x + y) * 0.5;
 			// Bind each tile's position with related element inside m_tiles_vec.
 			m_tiles_vec[y * m_width + x].m_sprite.setPosition(pos);
+
+			// If current tile is selected, set its color to be cyan, white color otherwise.
+			if (m_selected_tiles_condition_vec.at(y * m_width + x) == 1)
+				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color::Cyan);
+			else
+				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color::White);
+
 			// Draw each tile object.
 			m_tiles_vec[y * m_width + x].render(renderWindow, dt);
 		}
@@ -278,4 +287,60 @@ void Map::DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, 
 	DFS(whitelist_vec, pos + sf::Vector2i(1, 0), region_idx, region_type);
 	DFS(whitelist_vec, pos + sf::Vector2i(-1, 0), region_idx, region_type);
 	DFS(whitelist_vec, pos + sf::Vector2i(0, -1), region_idx, region_type);
+}
+
+void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vector<TileTypeEnum>& blacklist_vec)
+{
+	// Ensure that start pos is always less than end pos on both axis.
+	if (start_pos.x > end_pos.x || start_pos.y > end_pos.y)
+		std::swap(start_pos, end_pos);
+
+	// Clamp both start pos and end pos in range.
+
+	if (start_pos.x >= m_width)
+		start_pos.x = (m_width - 1);
+	else if (start_pos.x < 0)
+		start_pos.x = 0;
+	if (start_pos.y >= m_height)
+		start_pos.y = (m_height - 1);
+	else if (start_pos.y < 0)
+		start_pos.y = 0;
+
+	if (end_pos.x > m_width)
+		end_pos.x = m_width;
+	else if (end_pos.x <= 0)
+		end_pos.x = 1;
+	if (end_pos.y > m_height)
+		end_pos.y = m_height;
+	else if (end_pos.y <= 0)
+		end_pos.y = 1;
+
+	// Traverse each position within the rectangle boundary of the map.
+	for (int y = start_pos.y; y <= end_pos.y; ++y)
+		for (int x = start_pos.x; x <= end_pos.x; ++x)
+		{
+			// Mark each selected tile object's condition to 1(selected) first.
+			m_selected_tiles_condition_vec[y * m_width + x] = 1;
+			// Increment the selected tiles' number first.
+			++m_selected_tiles_num;
+
+			// Iterate through each invalid tile type(should not be selected/de-selected).
+			for (const auto& tile_type : blacklist_vec)
+				// Check if current selected tile has an invalid type to be selected/de-selected.
+				if (m_tiles_vec[y * m_width + x].m_tileType == tile_type)
+				{
+					// Set related selected tile's condition and decrement the selected tiles' number.
+					m_selected_tiles_condition_vec[y * m_width + x] = 2;
+					--m_selected_tiles_num;
+					break;
+				}
+		}
+}
+
+void Map::deselect_tiles()
+{
+	// De-select each tile and reset the selected tiles' number to zero.
+	for (auto val : m_selected_tiles_condition_vec)
+		val = 0;
+	m_selected_tiles_num = 0;
 }

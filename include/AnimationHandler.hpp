@@ -12,18 +12,14 @@ class AnimationHandler
 	/**
 	 * Constructor of AnimationHandler class.
 	 */
-	AnimationHandler() : m_elapsed_time(0.f), m_curr_animation_idx(-1)
-	{
-	};
+	AnimationHandler() = default;
 
 	/**
 	 * Copy constructor of AnimationHandler class.
 	 * @param each_frame_size_rect A const reference of sf::IntRect indicates the input frame size.
 	 */
-	AnimationHandler(const sf::IntRect& each_frame_size_rect) : m_each_frame_size_rect(each_frame_size_rect),
-	m_elapsed_time(0.f), m_curr_animation_idx(-1)
-	{
-	};
+	explicit AnimationHandler(const sf::IntRect& each_frame_size_rect) : m_each_frame_size_rect(each_frame_size_rect)
+	{};
 
 	/**
 	 * Add a new animation into the animation vec.
@@ -53,9 +49,9 @@ class AnimationHandler
 	// Holds all animation objects for the game.
 	std::vector<Animation> m_animations_vec;
 	// The total time elapsed since the animation loop started.
-	float m_elapsed_time;
+	float m_elapsed_time{0.f};
 	// The index of current animation object, -1 indicates not start animation loop yet.
-	int m_curr_animation_idx;
+	int m_curr_animation_idx{-1};
 
 };
 

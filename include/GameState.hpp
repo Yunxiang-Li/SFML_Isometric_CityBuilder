@@ -29,6 +29,8 @@ class GameState
 
 	// A member indicates the shared pointer of the game object.
 	std::shared_ptr<Game> m_game_ptr;
+
+	virtual ~GameState() = default;
 };
 
 #endif // GAMESTATE_HPP

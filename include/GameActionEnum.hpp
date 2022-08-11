@@ -8,7 +8,8 @@
 enum class GameActionEnum
 {
 	NONE,
-	CAMERA_PANNING
+	CAMERA_PANNING,
+	TILE_SELECTING
 };
 
 #endif //GAMEACTIONENUM_H

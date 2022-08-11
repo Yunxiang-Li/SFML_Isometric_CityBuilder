@@ -14,7 +14,12 @@ class MainMenuGameState : public GameState
 	 * Constructor of MainMenuGameState class.
 	 * @param game_ptr A std::shared_ptr<Game> object indicates the pointer of game object.
 	 */
-	MainMenuGameState(std::shared_ptr<Game> game_ptr);
+	explicit MainMenuGameState(std::shared_ptr<Game> game_ptr);
+
+	/**
+ 	 * Virtual destructor.
+ 	 */
+	virtual ~MainMenuGameState() = default;
 
 	/**
 	* Render the related scene according to delta time.

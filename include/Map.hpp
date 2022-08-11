@@ -16,7 +16,7 @@ class Map
 	/**
 	 * Constructor of Map class. Create a blank map.
 	 */
-	Map() : m_width(0), m_height(0), m_tile_half_width(TILE_HALF_WIDTH), m_region_num_arr{0} {};
+	Map() = default;
 
 	/**
 	 * Four parameter constructor of Map class. Create the map from a file.
@@ -70,19 +70,39 @@ class Map
 	 */
 	void updateDirection(TileTypeEnum tileType);
 
+	/**
+	 * Selects all tiles within the bounding rectangle of start_pos and end_pos and sets all tiles within that rectangle
+	 * which are also in the blacklist to invalid condition.
+	 * @param start_pos A reference of sf::Vector2i indicates the smaller position on map indicates the top left corner
+	 * of the bounding rectangle.
+	 * @param end_pos A reference of sf::Vector2i indicates bigger position on map indicates the bottom right corner of
+	 * the bounding rectangle.
+	 * @param blacklist_vec A const reference of std::vector<TileTypeEnum> indicates all invalid tile types(cannot be
+	 * selected/de-selected).
+	 */
+	void select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vector<TileTypeEnum>& blacklist_vec);
+
+	/**
+	 * De-selected all valid tiles.
+	 */
+	void deselect_tiles();
+
 	// Dimension of the map.
-	unsigned int m_width;
-	unsigned int m_height;
+	unsigned int m_width{0};
+	unsigned int m_height{0};
 	// Holds all Tile objects to construct the map.
 	std::vector<Tile> m_tiles_vec;
 	// Contains each industrial tile object's limited production.
 	std::vector<unsigned int> m_resource_vec;
 	// Each tile object has 16 pixels' width(thus half width is 8 pixels) and 8 pixels' height.
-	unsigned int m_tile_half_width;
-	// TODO:
-	unsigned int m_selected_num;
+	unsigned int m_tile_half_width{TILE_HALF_WIDTH};
 	// An unsigned int array, index indicates the region type, result indicates the related regions' number.
-	unsigned int m_region_num_arr[1];
+	unsigned int m_region_num_arr[1]{0};
+	// Indicates number of selected tiles.
+	unsigned int m_selected_tiles_num{0};
+	/* Indicates current map's all selected tiles' conditions. Value 0 means related tile is de-selected, 1 means
+	 * related tile is selected and 2 means related tile is invalid to be selected/de-selected. */
+	std::vector<char> m_selected_tiles_condition_vec{};
 
  private:
 	/**

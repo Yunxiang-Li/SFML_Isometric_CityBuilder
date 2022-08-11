@@ -84,13 +84,13 @@ class Tile
 	 * tile object is inside the region_idxth's region of region_type. */
 	unsigned int m_region_arr[1]{0};
 	// Placement cost of each tile.
-	unsigned int m_cost;
+	unsigned int m_cost{0};
 	// Current residents inside the tile.
 	double m_population{0.0};
 	// Indicates the population limit of current level. This value will be updated according to Tile's current level.
-	unsigned int m_curr_level_population_limit;
+	unsigned int m_curr_level_population_limit{0};
 	// Maximum level of current Tile object.
-	unsigned int m_max_level;
+	unsigned int m_max_level{0};
 	// Current tile's overall production per work and per day.
 	float m_production_per_worker_per_day{0.f};
 	// Overall production of the tile.
