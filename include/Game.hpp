@@ -3,10 +3,6 @@
 #define GAME_HPP
 
 #include <stack>
-// Include for smart pointers.
-#include <memory>
-// Include for sf::RenderWindow.
-#include <SFML/Graphics.hpp>
 #include "TextureManager.hpp"
 #include "Tile.hpp"
 

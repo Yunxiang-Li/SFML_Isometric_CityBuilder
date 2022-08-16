@@ -103,12 +103,13 @@ void MainGameState::inputProcess()
 				// Convert and store mouse's screen position to world position.
 				sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
 					(m_game_ptr->m_game_window), m_view);
-				// Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
-				m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
-					(mouse_pos.x / 2 * m_game_map.m_tile_half_width) - (0.5 * m_game_map.m_width);
-				m_select_start_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
-					(mouse_pos.x / 2 * m_game_map.m_tile_half_width) + (0.5 * m_game_map.m_width);
-
+				/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
+				 * Additional 0.5 is a compensation offset for integer truncation. */
+				m_select_end_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
+					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) - (0.5 * m_game_map.m_width) - 0.5;
+				m_select_end_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
+					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) + (0.5 * m_game_map.m_width) + 0.5;
+				// x:520, y:1.38
 				// Deselected all tiles first.
 				m_game_map.deselect_tiles();
 
@@ -151,11 +152,12 @@ void MainGameState::inputProcess()
 					// Convert and store mouse's screen position to world position.
 					sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
 						(m_game_ptr->m_game_window), m_view);
-					// Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
+					/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
+					 * Additional 0.5 is a compensation offset for integer truncation. */
 					m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
-						(mouse_pos.x / 2 * m_game_map.m_tile_half_width) - (0.5 * m_game_map.m_width);
+						(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) - (0.5 * m_game_map.m_width) - 0.5;
 					m_select_start_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
-						(mouse_pos.x / 2 * m_game_map.m_tile_half_width) + (0.5 * m_game_map.m_width);
+						(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) + (0.5 * m_game_map.m_width) + 0.5;
 				}
 			}
 			else if (event.mouseButton.button == sf::Mouse::Right)

@@ -3,7 +3,8 @@
 #define MAP_HPP
 
 #include "Tile.hpp"
-#include "unordered_map"
+#include <unordered_map>
+#include <string>
 
 // Define each tile object's half width in pixels.
 constexpr unsigned int TILE_HALF_WIDTH = 8;
