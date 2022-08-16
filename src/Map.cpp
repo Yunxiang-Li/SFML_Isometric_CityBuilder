@@ -74,7 +74,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 			m_tiles_vec.emplace_back(str_tile_map.at("road"));
 			break;
 		case TileTypeEnum::GRASS:
-			m_tiles_vec.emplace_back(str_tile_map.at("grass"));
+			m_tiles_vec.emplace_back(str_tile_map.at("residential"));
 			break;
 		default:
 			break;
@@ -123,9 +123,9 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 			// Bind each tile's position with related element inside m_tiles_vec.
 			m_tiles_vec[y * m_width + x].m_sprite.setPosition(pos);
 
-			// If current tile is selected, set its color to be cyan, white color otherwise.
+			// If current tile is selected, set its color to be dark, white color otherwise.
 			if (m_selected_tiles_condition_vec.at(y * m_width + x) == 1)
-				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color::Cyan);
+				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color(0x7d, 0x7d, 0x7d));
 			else
 				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color::White);
 
@@ -292,11 +292,12 @@ void Map::DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, 
 void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vector<TileTypeEnum>& blacklist_vec)
 {
 	// Ensure that start pos is always less than end pos on both axis.
-	if (start_pos.x > end_pos.x || start_pos.y > end_pos.y)
-		std::swap(start_pos, end_pos);
+	if (start_pos.x > end_pos.x)
+		std::swap(start_pos.x, end_pos.x);
+	if (start_pos.y > end_pos.y)
+		std::swap(start_pos.y, end_pos.y);
 
 	// Clamp both start pos and end pos in range.
-
 	if (start_pos.x >= m_width)
 		start_pos.x = (m_width - 1);
 	else if (start_pos.x < 0)
@@ -306,14 +307,14 @@ void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vect
 	else if (start_pos.y < 0)
 		start_pos.y = 0;
 
-	if (end_pos.x > m_width)
-		end_pos.x = m_width;
-	else if (end_pos.x <= 0)
-		end_pos.x = 1;
-	if (end_pos.y > m_height)
-		end_pos.y = m_height;
-	else if (end_pos.y <= 0)
-		end_pos.y = 1;
+	if (end_pos.x >= m_width)
+		end_pos.x = m_width - 1;
+	else if (end_pos.x < 0)
+		end_pos.x = 0;
+	if (end_pos.y >= m_height)
+		end_pos.y = m_height - 1;
+	else if (end_pos.y < 0)
+		end_pos.y = 0;
 
 	// Traverse each position within the rectangle boundary of the map.
 	for (int y = start_pos.y; y <= end_pos.y; ++y)
