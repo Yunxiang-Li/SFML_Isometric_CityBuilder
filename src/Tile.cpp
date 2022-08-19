@@ -7,11 +7,11 @@ constexpr unsigned int LEVEL_BASE_NUM = 1e2;
 void Tile::render(sf::RenderWindow& render_window, float dt)
 {
 	// Switch to current tile object's animation.
-	m_animationHandler.change_anim(m_level);
+	m_animationHandler_ptr->changeAnim(m_level);
 	// Update the current frame of animation.
-	m_animationHandler.update(dt);
+	m_animationHandler_ptr->update(dt);
 	// Set new current frame of animation's texture rect.
-	m_sprite.setTextureRect(m_animationHandler.m_each_frame_texture_rect);
+	m_sprite.setTextureRect(*(m_animationHandler_ptr->get_each_frame_texture_rect_ptr()));
 	// Draw current tile sprite on the render window.
 	render_window.draw(m_sprite);
 }

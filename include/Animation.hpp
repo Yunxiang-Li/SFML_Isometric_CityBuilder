@@ -21,7 +21,15 @@ class Animation
 	 * Get the total frame length between start and end frame.
 	 * @return  An unsigned integer indicates the animation's total frame length.
 	 */
-	unsigned int get_total_frame() const;
+	unsigned int getTotalFrame() const;
+
+	/**
+	 * Get the animation duration.
+	 * @return A float indicates the animation duration.
+	 */
+	float getDuration() const;
+
+ private:
 
 	// Members that store each animation's start frame, end frame and animation duration.
 	unsigned int m_start_frame;

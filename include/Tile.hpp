@@ -36,29 +36,32 @@ class Tile
 	Tile(const unsigned int tile_half_width_pixel, const unsigned int tile_height_num, sf::Texture& texture,
 		std::vector<Animation> animation_vec, const TileTypeEnum& tileType, const unsigned int cost,
 		const unsigned int curr_level_population_limit, const unsigned int max_level) : m_tileType(tileType),
-		m_cost(cost), m_curr_level_population_limit(curr_level_population_limit), m_max_level(max_level)
+		m_cost(cost), m_curr_level_population_limit(curr_level_population_limit), m_max_level(max_level),
+		m_animationHandler_ptr(std::make_shared<AnimationHandler>())
 		{
 			/* Since one texture contains at most 4 tiles, we need to set up the top left point of the current
 			 * tile sprite according to the whole texture.*/
 			m_sprite.setOrigin(sf::Vector2f(0.f, (tile_height_num - 1) * tile_half_width_pixel));
 			m_sprite.setTexture(texture);
 
-			// Set up animation handler's m_each_frame_size_rect(we only care about width and height here).
-			m_animationHandler.m_each_frame_size_rect = sf::IntRect(0, 0,
-				2 * tile_half_width_pixel, tile_half_width_pixel * tile_height_num);
+			// Set up animation handler's m_each_frame_size_rect_ptr(we only care about width and height here).
+			m_animationHandler_ptr->SetEachFrameSizeRectPtr(std::make_unique<const sf::IntRect>((sf::IntRect(0,
+				0, 2 * tile_half_width_pixel, tile_half_width_pixel * tile_height_num))));
+
 			// Store all tile related animation.
 			for (auto& each_anim : animation_vec)
 			{
-				m_animationHandler.add_anim(each_anim);
+				m_animationHandler_ptr->addAnim(each_anim);
 			}
 			// Reset animation handler's elapsed time to 0.
-			m_animationHandler.update(0.f);
+			m_animationHandler_ptr->update(0.f);
 		};
 
 	/**
 	 * Draw the tile sprite within the render window and play the related animation.
 	 * @param render_window A reference of sf::RenderWindow indicates the place to render the tile sprite.
-	 * @param dt A float indicates the elapsed time since last render call(also last AnimationHandler::chanceLevelUp call).
+	 * @param dt A float indicates the elapsed time since last render call(also last AnimationHandler::chanceLevelUp
+	 * call).
 	 */
 	void render(sf::RenderWindow& render_window, float dt);
 
@@ -98,7 +101,7 @@ class Tile
 	// The sprite of the current tile object.
 	sf::Sprite m_sprite;
 	// An AnimationHandler object
-	AnimationHandler m_animationHandler;
+	std::shared_ptr<AnimationHandler> m_animationHandler_ptr;
 };
 
 #endif //TILE_HPP

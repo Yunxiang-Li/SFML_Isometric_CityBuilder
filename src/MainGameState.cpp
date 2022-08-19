@@ -7,7 +7,7 @@ MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(Ga
 	// Store the game pointer.
 	m_game_ptr = std::move(game_ptr);
 	// Set main game view and GUI view's size.
-	sf::Vector2f game_view_size = sf::Vector2f(m_game_ptr->m_game_window.getSize());
+	sf::Vector2f game_view_size(sf::Vector2f(m_game_ptr->m_game_window.getSize()));
 	m_view.setSize(game_view_size);
 	m_gui_view.setSize(game_view_size);
 	// Reset main menu view and GUI view's size and center
@@ -89,8 +89,8 @@ void MainGameState::inputProcess()
 			// Pan the camera when player keep pressing the mouse middle button.
 			if (m_action_state == GameActionEnum::CAMERA_PANNING)
 			{
-				sf::Vector2f pos = sf::Vector2f(sf::Mouse::getPosition(m_game_ptr->m_game_window) -
-					m_prev_mouse_pos);
+				sf::Vector2f pos(sf::Vector2f(sf::Mouse::getPosition(m_game_ptr->m_game_window) -
+					m_prev_mouse_pos));
 				/* Main game view should move towards the opposite direction according to the zoom level since moving
 				 * a camera to the right is the same as moving everything else to the left. */
 				m_view.move(-1.f * pos * m_zoom_level);
@@ -101,15 +101,15 @@ void MainGameState::inputProcess()
 			else if (m_action_state == GameActionEnum::TILE_SELECTING)
 			{
 				// Convert and store mouse's screen position to world position.
-				sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
-					(m_game_ptr->m_game_window), m_view);
+				sf::Vector2f mouse_pos(m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
+					(m_game_ptr->m_game_window), m_view));
 				/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 				 * Additional 0.5 is a compensation offset for integer truncation. */
 				m_select_end_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
 					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) - (0.5 * m_game_map.m_width) - 0.5;
 				m_select_end_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
 					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) + (0.5 * m_game_map.m_width) + 0.5;
-				// x:520, y:1.38
+
 				// Deselected all tiles first.
 				m_game_map.deselect_tiles();
 
@@ -150,8 +150,8 @@ void MainGameState::inputProcess()
 				{
 					m_action_state = GameActionEnum::TILE_SELECTING;
 					// Convert and store mouse's screen position to world position.
-					sf::Vector2f mouse_pos = m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
-						(m_game_ptr->m_game_window), m_view);
+					sf::Vector2f mouse_pos(m_game_ptr->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
+						(m_game_ptr->m_game_window), m_view));
 					/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 					 * Additional 0.5 is a compensation offset for integer truncation. */
 					m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +

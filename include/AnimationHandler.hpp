@@ -4,7 +4,11 @@
 
 #include "Animation.hpp"
 #include <vector>
+#include <memory>
 #include "SFML/Graphics.hpp"
+
+// Forward declaration.
+class Animation;
 
 class AnimationHandler
 {
@@ -15,17 +19,18 @@ class AnimationHandler
 	AnimationHandler() = default;
 
 	/**
-	 * Copy constructor of AnimationHandler class.
+	 * One parameter constructor of AnimationHandler class.
 	 * @param each_frame_size_rect A const reference of sf::IntRect indicates the input frame size.
 	 */
-	explicit AnimationHandler(const sf::IntRect& each_frame_size_rect) : m_each_frame_size_rect(each_frame_size_rect)
+	explicit AnimationHandler(const sf::IntRect& each_frame_size_rect) : m_each_frame_size_rect_ptr
+	(std::make_unique<const sf::IntRect>(each_frame_size_rect))
 	{};
 
 	/**
 	 * Add a new animation into the animation vec.
 	 * @param anim_ref A reference of an Animation object indicates the input new Animation.
 	 */
-	void add_anim(Animation& anim_ref);
+	void addAnim(Animation& anim_ref);
 
 	/**
 	 * Update the current frame of animation. dt is the elapsed time since last chanceLevelUp function call.
@@ -37,17 +42,31 @@ class AnimationHandler
 	 * Change animation from current one with specified one.
 	 * @param anim_idx A const unsigned integer indicates the specified animation's index.
 	 */
-	void change_anim(const unsigned int anim_idx);
+	void changeAnim(const unsigned int anim_idx);
 
-	// Each frame's section of the texture that should be displayed(both position and dimension are used).
-	sf::IntRect m_each_frame_texture_rect;
+	/**
+	 * Get and return m_each_frame_texture_rect_ptr member.
+	 * @return A std::shared_ptr<const sf::IntRect> indicates the m_each_frame_texture_rect_ptr member.
+	 */
+	std::shared_ptr<const sf::IntRect> get_each_frame_texture_rect_ptr() const;
 
-	// Each frame's specified size rect(only width and height are used).
-	sf::IntRect m_each_frame_size_rect;
+	/**
+	 * Set each_frame_size_rect_ptr.
+	 * @param int_rect_ptr A std::unique_ptr<const sf::IntRect> indicates the new each_frame_size_rect_ptr.
+	 */
+	void SetEachFrameSizeRectPtr(std::unique_ptr<const sf::IntRect> int_rect_ptr);
 
  private:
-	// Holds all animation objects for the game.
-	std::vector<Animation> m_animations_vec;
+
+	/* A shared pointer stores each frame's const section of the texture that should be displayed(both position and
+	 * dimension are used). */
+	std::shared_ptr<const sf::IntRect> m_each_frame_texture_rect_ptr;
+
+	// A shared pointer stores each frame's specified const size rect(only width and height are used).
+	std::unique_ptr<const sf::IntRect> m_each_frame_size_rect_ptr;
+
+	// Holds a vector of all animation objects for the game.
+	std::vector<Animation> m_animations_vec_ptr;
 	// The total time elapsed since the animation loop started.
 	float m_elapsed_time{0.f};
 	// The index of current animation object, -1 indicates not start animation loop yet.

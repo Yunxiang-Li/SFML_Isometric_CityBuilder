@@ -4,6 +4,9 @@
 
 #include "GameState.hpp"
 
+// Forward declaration.
+class Gui;
+
 /**
  * This class inherits from the virtual base GameState class and represents the main menu game state.
  */
@@ -46,5 +49,8 @@ class MainMenuGameState : public GameState
 
 	// A sf::View object indicates the main menu's view.
 	sf::View m_view;
+
+	// A std::unordered_map that key is each Gui object's string name, value
+	std::unordered_map<std::string, std::shared_ptr<Gui>>m_str_Gui_map;
 };
 #endif // MAINMENUGAMESTATE_HPP

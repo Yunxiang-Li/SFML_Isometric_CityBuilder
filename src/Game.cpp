@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "GameState.hpp"
+#include "GuiStyle.hpp"
 
 // Store all game string literals.
 const std::string GAME_TITLE = "City Builder";
@@ -21,6 +22,8 @@ const std::string INDUSTRIAL_TILE_TEXTURE_PATH = "../resources/images/industrial
 const std::string ROAD_TILE_TEXTURE_PATH = "../resources/images/road.png";
 const std::string GRASS_TILE_TEXTURE_PATH = "../resources/images/grass.png";
 
+const std::string FONT_PATH = "../resources/fonts/font.ttf";
+
 Game::Game()
 {
 	// Create a 1280 X 720 game window with the title "City Builder" and set max frame rate to be 60fps.
@@ -28,67 +31,71 @@ Game::Game()
 	m_game_window.setFramerateLimit(60);
 
 	// Load all game textures.
-	this->loadGameTextures();
+	this->load_game_textures();
 	// Create and store all 7 types of tiles.
-	this->loadTiles();
+	this->load_tiles();
 	// Set up game background's sprite object.
-	m_background_sprite.setTexture(TextureManager::getInstance()->getTextureRef(GAME_BACKGROUND_TEXTURE_NAME));
+	m_background_sprite.setTexture(TextureManager::getInstance()->
+	getTextureRef(GAME_BACKGROUND_TEXTURE_NAME));
+	// Load font and Gui styles.
+	this->load_fonts();
+	this->load_Gui_styles();
 }
 
 Game::~Game()
 {
 	while (!(m_state_stack.empty()))
-		this->popState();
+		this->pop_state();
 }
 
-void Game::pushState(std::unique_ptr<GameState> state_ptr)
+void Game::push_state(std::unique_ptr<GameState> state_ptr)
 {
 	m_state_stack.emplace(std::move(state_ptr));
 }
 
-void Game::popState()
+void Game::pop_state()
 {
 	m_state_stack.pop();
 }
 
-void Game::switchState(std::unique_ptr<GameState> state_ptr)
+void Game::switch_state(std::unique_ptr<GameState> state_ptr)
 {
 	if (!(m_state_stack.empty()))
-		this->popState();
-	this->pushState(std::move(state_ptr));
+		this->pop_state();
+	this->push_state(std::move(state_ptr));
 }
 
-GameState* Game::peekState() const
+GameState* Game::peek_state() const
 {
 	if (m_state_stack.empty())
 		return nullptr;
 	return m_state_stack.top().get();
 }
 
-void Game::gameLoop()
+void Game::game_loop()
 {
 	// Create a sf::Clock object to help track the time.
 	sf::Clock game_clock;
 	while (m_game_window.isOpen())
 	{
 		// Get the elapsed time since last frame and convert it to seconds inside a float value.
-		sf::Time elapsed_time = game_clock.restart();
+		sf::Time elapsed_time(game_clock.restart());
 		float delta_time = elapsed_time.asSeconds();
 		// If the game is not in any states, then continue to next frame.
-		if (this->peekState() == nullptr)
+		if (this->peek_state() == nullptr)
 			continue;
 		// Else handle player's input and chanceLevelUp current frame's behavior within current game state.
-		this->peekState()->inputProcess();
-		this->peekState()->update(delta_time);
+		this->peek_state()->inputProcess();
+		this->peek_state()->update(delta_time);
 		// Clear the game window with black color.
 		m_game_window.clear(sf::Color::Black);
 		// Render and display the current frame content.
-		this->peekState()->render(delta_time);
+		this->peek_state()->render(delta_time);
 		m_game_window.display();
 	}
 }
 
-void Game::loadGameTextures()
+void Game::load_game_textures()
 {
 	TextureManager::getInstance()->loadTexture(GAME_BACKGROUND_TEXTURE_NAME,
 		GAME_BACKGROUND_TEXTURE_PATH);
@@ -104,7 +111,7 @@ void Game::loadGameTextures()
 		INDUSTRIAL_TILE_TEXTURE_PATH);
 }
 
-void Game::loadTiles()
+void Game::load_tiles()
 {
 	// Create a local Animation object to help load all 7 types of tiles.
 	Animation default_anim(0, 0, 1.f);
@@ -153,4 +160,30 @@ void Game::loadTiles()
 	TextureManager::getInstance()->getTextureRef("road"),{default_anim, default_anim,
 	default_anim, default_anim, default_anim, default_anim, default_anim, default_anim, default_anim, default_anim,
 	default_anim},TileTypeEnum::ROAD,100, 0, 1);
+}
+
+void Game::load_Gui_styles()
+{
+	// Set up button and text's Gui styles.
+
+	m_str_GuiStyle_ptr_map["button"] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map.at("main_font"),
+		1.f,sf::Color(0xc6,0xc6,0xc6), sf::Color(0x94,0x94,
+			0x94),sf::Color::Black, sf::Color(0x61,0x61,0x61),
+			sf::Color(0x94,0x94,0x94),sf::Color::Black));
+	m_str_GuiStyle_ptr_map["text"] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map.at("main_font"),
+		0.f,sf::Color(0x00,0x00,0x00,0x00), sf::Color::Black,
+		sf::Color::White,sf::Color(0x00,0x00,0x00,0x00),
+		sf::Color::Black,sf::Color::Red));
+}
+
+void Game::load_fonts()
+{
+	sf::Font font;
+	font.loadFromFile(FONT_PATH);
+	m_str_font_ptr_map["main_font"] = std::make_shared<sf::Font>(font);
+}
+
+std::shared_ptr<GuiStyle> Game::getGuiStylePtr(const std::string& Gui_style_name) const
+{
+	return m_str_GuiStyle_ptr_map.at(Gui_style_name);
 }

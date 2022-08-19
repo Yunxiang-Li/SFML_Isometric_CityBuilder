@@ -33,8 +33,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 	std::unordered_map<std::string, Tile>& str_tile_map)
 {
 	// Open the store eternal file in binary form to read.
-	std::ifstream input_file;
-	input_file.open(file_name, std::ios::binary);
+	std::ifstream input_file(file_name, std::ios::binary);
 
 	// Store the dimension of the map.
 	m_width = width;
@@ -94,8 +93,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 void Map::save(const std::string& file_name)
 {
 	// Open the eternal file in binary form to write.
-	std::ofstream output_file;
-	output_file.open(file_name, std::ios::binary);
+	std::ofstream output_file(file_name, std::ios::binary);
 
 	// Store each tile object's tile type, current level, region id array, current population and total production.
 	for (auto& each_tile: m_tiles_vec)
@@ -112,14 +110,14 @@ void Map::save(const std::string& file_name)
 
 void Map::render(sf::RenderWindow& renderWindow, float dt)
 {
-	sf::Vector2f pos;
+
 	// Iterate horizontally and then vertically to render each isometric tile.
 	for (int y = 0; y < m_height; ++y)
 		for (int x = 0; x < m_width; ++x)
 		{
 			// Get each isometric tile's position(tile coordinate to screen coordinate).
-			pos.x = m_tile_half_width * (x - y) + m_width * m_tile_half_width;
-			pos.y = m_tile_half_width * (x + y) * 0.5;
+			sf::Vector2f pos(m_tile_half_width * (x - y) + m_width * m_tile_half_width,
+				m_tile_half_width * (x + y) * 0.5);
 			// Bind each tile's position with related element inside m_tiles_vec.
 			m_tiles_vec[y * m_width + x].m_sprite.setPosition(pos);
 
