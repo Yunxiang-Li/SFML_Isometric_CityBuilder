@@ -22,7 +22,7 @@
 	 * @param entries_text_msg_vec A vector of pair of string, first element indicates the related Gui Entry object's
 	 * name, second element indicates this Gui Entry object's activated message.
 	 */
-	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, const GuiStyle& gui_style,
+	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, GuiStyle& gui_style,
 		std::vector<std::pair<std::string, std::string>> entries_text_msg_vec) :m_is_visible(false),
 		m_is_horizontal(is_horizontal), m_gui_style(gui_style), m_entry_shape_dimension(entry_shape_dimension),
 		m_text_padding(text_padding)
@@ -122,6 +122,7 @@
   private:
 	// A vector of multiple GuiEntry objects.
 	std::vector<GuiEntry> m_Gui_entry_vec;
+
 	// A bool indicates if the Gui should be visible or not.
 	bool m_is_visible{false};
 	// Indicates if the menu entry is horizontal or not. If not, then vertically.
