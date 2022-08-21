@@ -32,6 +32,27 @@ class GameState
 	 */
 	virtual ~GameState() = default;
 
+ protected:
+
+	/**
+	 * Retrieve the game pointer.
+	 * @return A std::shared_ptr<Game> indicates the game pointer.
+	 */
+	inline std::shared_ptr<Game> get_game_ptr()
+	{
+		return m_game_ptr;
+	};
+
+	/**
+	 *
+	 * @param game_ptr
+	 */
+	inline void set_game_ptr(std::shared_ptr<Game> game_ptr)
+	{
+		m_game_ptr = game_ptr;
+	};
+
+ private:
 	// A member indicates the shared pointer of the game object.
 	std::shared_ptr<Game> m_game_ptr;
 };

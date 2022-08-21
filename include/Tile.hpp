@@ -44,9 +44,9 @@ class Tile
 			m_sprite.setOrigin(sf::Vector2f(0.f, (tile_height_num - 1) * tile_half_width_pixel));
 			m_sprite.setTexture(texture);
 
-			// Set up animation handler's m_each_frame_size_rect_ptr(we only care about width and height here).
-			m_animationHandler_ptr->SetEachFrameSizeRectPtr(std::make_unique<const sf::IntRect>((sf::IntRect(0,
-				0, 2 * tile_half_width_pixel, tile_half_width_pixel * tile_height_num))));
+			// Set up animation handler's m_each_frame_size_rect(we only care about width and height here).
+			m_animationHandler_ptr->SetEachFrameSizeRect((sf::IntRect(0,0,
+				2 * tile_half_width_pixel, tile_half_width_pixel * tile_height_num)));
 
 			// Store all tile related animation.
 			for (auto& each_anim : animation_vec)

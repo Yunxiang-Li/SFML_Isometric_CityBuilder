@@ -30,9 +30,11 @@ int Gui::get_gui_entry_idx(const sf::Vector2f& mouse_pos) const
 		relative_pos -= m_Gui_entry_vec[i].m_entry_shape.getPosition();
 
 		// Ignore all positions that are not within the relative GuiEntry object's shape.
-		if (relative_pos.x < 0 || relative_pos.x > (m_Gui_entry_vec[i].m_entry_shape.getScale().x * m_entry_shape_dimension.x))
+		if (relative_pos.x < 0 || relative_pos.x > (m_Gui_entry_vec[i].m_entry_shape.getScale().x *
+		m_entry_shape_dimension.x))
 			continue;
-		if (relative_pos.y < 0 || relative_pos.y > (m_Gui_entry_vec[i].m_entry_shape.getScale().y * m_entry_shape_dimension.y))
+		if (relative_pos.y < 0 || relative_pos.y > (m_Gui_entry_vec[i].m_entry_shape.getScale().y *
+		m_entry_shape_dimension.y))
 			continue;
 		return i;
 	}
@@ -60,7 +62,8 @@ void Gui::set_each_gui_entry_dimension(const sf::Vector2f& dimension)
 	for (auto& each_entry : m_Gui_entry_vec)
 	{
 		each_entry.m_entry_shape.setSize(dimension);
-		each_entry.m_text.setCharacterSize(m_entry_shape_dimension.y - m_gui_style.m_outline_size - m_text_padding);
+		each_entry.m_text.setCharacterSize(m_entry_shape_dimension.y - m_gui_style_ptr->m_outline_size -
+		m_text_padding);
 	}
 }
 
@@ -122,16 +125,16 @@ void Gui::highlight_entry(const unsigned int entry_idx)
 		// When find the specified GuiEntry object, then use highlighted colors.
 		if (i == entry_idx)
 		{
-			m_Gui_entry_vec[i].m_entry_shape.setFillColor(m_gui_style.m_background_highlight_color);
-			m_Gui_entry_vec[i].m_entry_shape.setOutlineColor(m_gui_style.m_outline_highlight_color);
-			m_Gui_entry_vec[i].m_text.setFillColor(m_gui_style.m_text_highlight_color);
+			m_Gui_entry_vec[i].m_entry_shape.setFillColor(m_gui_style_ptr->m_background_highlight_color);
+			m_Gui_entry_vec[i].m_entry_shape.setOutlineColor(m_gui_style_ptr->m_outline_highlight_color);
+			m_Gui_entry_vec[i].m_text.setFillColor(m_gui_style_ptr->m_text_highlight_color);
 		}
 		// Otherwise, use normal colors.
 		else
 		{
-			m_Gui_entry_vec[i].m_entry_shape.setFillColor(m_gui_style.m_background_color);
-			m_Gui_entry_vec[i].m_entry_shape.setOutlineColor(m_gui_style.m_outline_color);
-			m_Gui_entry_vec[i].m_text.setFillColor(m_gui_style.m_text_color);
+			m_Gui_entry_vec[i].m_entry_shape.setFillColor(m_gui_style_ptr->m_background_color);
+			m_Gui_entry_vec[i].m_entry_shape.setOutlineColor(m_gui_style_ptr->m_outline_color);
+			m_Gui_entry_vec[i].m_text.setFillColor(m_gui_style_ptr->m_text_color);
 		}
 	}
 }

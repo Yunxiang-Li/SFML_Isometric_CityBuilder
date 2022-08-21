@@ -22,18 +22,19 @@
 	 * @param entries_text_msg_vec A vector of pair of string, first element indicates the related Gui Entry object's
 	 * name, second element indicates this Gui Entry object's activated message.
 	 */
-	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, GuiStyle& gui_style,
-		std::vector<std::pair<std::string, std::string>> entries_text_msg_vec) :m_is_visible(false),
-		m_is_horizontal(is_horizontal), m_gui_style(gui_style), m_entry_shape_dimension(entry_shape_dimension),
-		m_text_padding(text_padding)
+	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, const GuiStyle& gui_style,
+		std::vector<std::pair<std::string, std::string>> entries_text_msg_vec) : m_is_visible(false),
+																				 m_is_horizontal(is_horizontal),
+		m_gui_style_ptr(std::make_unique<GuiStyle>(gui_style)), m_entry_shape_dimension(entry_shape_dimension),
+																				 m_text_padding(text_padding)
 	{
 		// Set up Gui entry shape's properties.
 		sf::RectangleShape gui_entry_shape;
 		gui_entry_shape.setSize(m_entry_shape_dimension);
-		gui_entry_shape.setFillColor(m_gui_style.m_background_color);
+		gui_entry_shape.setFillColor(m_gui_style_ptr->m_background_color);
 		// Outline expands toward the inner part of the shape.
-		gui_entry_shape.setOutlineThickness(-m_gui_style.m_outline_size);
-		gui_entry_shape.setOutlineColor(m_gui_style.m_outline_color);
+		gui_entry_shape.setOutlineThickness(-m_gui_style_ptr->m_outline_size);
+		gui_entry_shape.setOutlineColor(m_gui_style_ptr->m_outline_color);
 
 		// Traverse each pair inside entries_text_msg_vec.
 		for (const auto& each_pair : entries_text_msg_vec)
@@ -41,9 +42,10 @@
 			// Set up each Gui entry's text.
 			sf::Text gui_entry_text;
 			gui_entry_text.setString(each_pair.first);
-			gui_entry_text.setFont(*(m_gui_style.m_font_ptr));
-			gui_entry_text.setFillColor(m_gui_style.m_text_color);
-			gui_entry_text.setCharacterSize(m_entry_shape_dimension.y - m_gui_style.m_outline_size - m_text_padding);
+			gui_entry_text.setFont(*(m_gui_style_ptr->m_font_ptr));
+			gui_entry_text.setFillColor(m_gui_style_ptr->m_text_color);
+			gui_entry_text.setCharacterSize(m_entry_shape_dimension.y - m_gui_style_ptr->m_outline_size
+			- m_text_padding);
 
 			// Store each GuiEntry object.
 			m_Gui_entry_vec.emplace_back(GuiEntry(each_pair.second, gui_entry_shape, gui_entry_text));
@@ -127,8 +129,8 @@
 	bool m_is_visible{false};
 	// Indicates if the menu entry is horizontal or not. If not, then vertically.
 	bool m_is_horizontal{true};
-  	// A GuiStyle object indicates the style(size, color, font) of our Gui.
-  	GuiStyle m_gui_style;
+  	// A std::unique_ptr<GuiStyle> object indicates the pointer of Gui's style(size, color, font).
+  	std::unique_ptr<GuiStyle> m_gui_style_ptr;
 	// Indicates the Gui entry shape's width and height(dimension).
 	sf::Vector2f m_entry_shape_dimension;
 	// Margin that surrounds the text to stop it from overlapping the edges in pixels.

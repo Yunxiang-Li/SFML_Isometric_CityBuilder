@@ -45,16 +45,15 @@ class TextureManager
 	 */
 	sf::Texture& getTextureRef(const std::string& texture_str);
 
- protected:
+ private:
 	/**
-	 * Hide the constructor of TextureManager class.
-	 */
+ 	 * Hide the constructor of TextureManager class.
+ 	 */
 	TextureManager() = default;
 
 	// A std::shared_ptr<TextureManager> object indicates the singleton instance of TextureManager.
 	static std::shared_ptr<TextureManager> m_instance;
 
- private:
 	// An unordered_map that uses each texture's string name as key and related texture object as value.
 	std::unordered_map<std::string, sf::Texture> m_str_texture_map;
 };

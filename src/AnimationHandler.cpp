@@ -22,12 +22,12 @@ void AnimationHandler::update(const float dt)
 		next_frame_idx %= m_animations_vec_ptr[m_curr_animation_idx].getTotalFrame();
 
 		// Create a temp sf::IntRect as a copy of each frame's rect.
-		sf::IntRect temp_rect(*m_each_frame_size_rect_ptr);
+		sf::IntRect temp_rect(m_each_frame_size_rect);
 		// Update temp rect's left and top to be next frame's real texture rect.
 		temp_rect.left = temp_rect.width * next_frame_idx;
 		temp_rect.top = temp_rect.height * next_frame_idx;
 		// Set up next frame's texture rect.
-		m_each_frame_texture_rect_ptr = std::make_shared<const sf::IntRect>(temp_rect);
+		m_each_frame_texture_rect = temp_rect;
 	}
 
 	// Update elapsed time so far.
@@ -46,20 +46,20 @@ void AnimationHandler::changeAnim(const unsigned int anim_idx)
 	m_curr_animation_idx = anim_idx;
 
 	// Create a temp sf::IntRect as a copy of each frame's rect.
-	sf::IntRect temp_rect(*m_each_frame_size_rect_ptr);
+	sf::IntRect temp_rect(m_each_frame_size_rect);
 	// Update temp rect's left and top to be first frame's real texture rect.
 	temp_rect.top = temp_rect.height * m_curr_animation_idx;
 	// Set up next animation's first texture rect and reset total elapsed time.
-	m_each_frame_texture_rect_ptr = std::make_shared<const sf::IntRect>(temp_rect);
+	m_each_frame_texture_rect = static_cast<const sf::IntRect>(temp_rect);
 	m_elapsed_time = 0.f;
 }
 
-std::shared_ptr<const sf::IntRect> AnimationHandler::get_each_frame_texture_rect_ptr() const
+sf::IntRect AnimationHandler::get_each_frame_texture_rect() const
 {
-	return m_each_frame_texture_rect_ptr;
+	return m_each_frame_texture_rect;
 }
 
-void AnimationHandler::SetEachFrameSizeRectPtr(std::unique_ptr<const sf::IntRect> int_rect_ptr)
+void AnimationHandler::SetEachFrameSizeRect(const sf::IntRect& int_rect)
 {
-	m_each_frame_size_rect_ptr = std::move(int_rect_ptr);
+	m_each_frame_size_rect = int_rect;
 }

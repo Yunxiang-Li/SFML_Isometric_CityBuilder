@@ -11,7 +11,7 @@ void Tile::render(sf::RenderWindow& render_window, float dt)
 	// Update the current frame of animation.
 	m_animationHandler_ptr->update(dt);
 	// Set new current frame of animation's texture rect.
-	m_sprite.setTextureRect(*(m_animationHandler_ptr->get_each_frame_texture_rect_ptr()));
+	m_sprite.setTextureRect(m_animationHandler_ptr->get_each_frame_texture_rect());
 	// Draw current tile sprite on the render window.
 	render_window.draw(m_sprite);
 }
