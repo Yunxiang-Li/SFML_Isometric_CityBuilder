@@ -47,8 +47,8 @@ class MainGameState : public GameState
 	sf::View m_gui_view;
 	// Indicates player's current action inside the main game scene.
 	GameActionEnum m_action_state;
-	// Indicates the main game scene's map.
-	Map m_game_map;
+	// A std::shared_ptr<Map> indicates the pointer of main game scene's map.
+	std::shared_ptr<Map>(m_game_map_ptr);
 	/* Keep track of mouse screen position since last camera panning event. When player presses mouse middle button and
 	 * moves mouse at the same time, the world(game view) should also move towards the opposite direction and this
 	 * position should be updated. */

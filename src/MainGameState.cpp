@@ -2,6 +2,17 @@
 #include <iostream>
 #include "MainGameState.hpp"
 
+// Store game map's dimension.
+constexpr unsigned int GAME_MAP_WIDTH(64);
+constexpr unsigned int GAME_MAP_HEIGHT(64);
+
+// Store zoom factor according to mouse scroll.
+constexpr float DOWNWARD_SCROLL_FACTOR(2.f);
+constexpr float UPWARD_SCROLL_FACTOR(0.5f);
+
+// Store integer truncation compensation.
+constexpr float INT_TRUNCATION_OFFSET(0.5f);
+
 MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(GameActionEnum::NONE)
 {
 	// Store the game pointer.
@@ -15,14 +26,16 @@ MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(Ga
 	m_gui_view.setCenter(game_view_size * 0.5f);
 
 	// Store a 64x64 game map from file city_map.dat.
-	m_game_map = Map("../resources/binary/city_map.dat", 64, 64, this->get_game_ptr()->m_str_tile_map);
+	m_game_map_ptr = std::move(std::make_shared<Map>(Map("../resources/binary/city_map.dat",
+		GAME_MAP_WIDTH,GAME_MAP_HEIGHT, this->get_game_ptr()->m_str_tile_map)));
 	// Center the camera on the isometric map.
-	sf::Vector2f camera_center(m_game_map.m_width, m_game_map.m_height * 0.5);
-	camera_center *= static_cast<float>(m_game_map.m_tile_half_width);
+	sf::Vector2f camera_center(m_game_map_ptr->m_width, m_game_map_ptr->m_height * 0.5);
+	camera_center *= static_cast<float>(m_game_map_ptr->m_tile_half_width);
 	m_view.setCenter(camera_center);
 
 	// Initialize current selected tile as a Grass tile.
-	m_curr_selected_tile_ptr = std::make_shared<Tile>(this->get_game_ptr()->m_str_tile_map.at("grass"));
+	m_curr_selected_tile_ptr = std::make_shared<Tile>(this->get_game_ptr()->m_str_tile_map.at
+		(GRASS_TILE_TEXTURE_NAME));
 }
 
 void MainGameState::render(const float dt)
@@ -34,7 +47,7 @@ void MainGameState::render(const float dt)
 
 	// Then draw the game map in the main game view.
 	this->get_game_ptr()->m_game_window.setView(m_view);
-	m_game_map.render(this->get_game_ptr()->m_game_window, dt);
+	m_game_map_ptr->render(this->get_game_ptr()->m_game_window, dt);
 }
 
 void MainGameState::update(const float dt)
@@ -66,13 +79,16 @@ void MainGameState::inputProcess()
 			// Zoom main game view with previously stored zoom level since resize event will reset zoom level to 1.
 			m_view.zoom(m_zoom_level);
 			// Set background sprite's position to window position (0, 0) related world position inside GUI view.
-			this->get_game_ptr()->m_background_sprite.setPosition(this->get_game_ptr()->m_game_window.mapPixelToCoords(sf::Vector2i(0,
+			this->get_game_ptr()->m_background_sprite.setPosition(this->get_game_ptr()->
+			m_game_window.mapPixelToCoords(sf::Vector2i(0,
 					0),
 				m_gui_view));
 			// Set background sprite to fill the entire window.
 			this->get_game_ptr()->m_background_sprite.setScale(
-				float(event.size.width) / float(this->get_game_ptr()->m_background_sprite.getTexture()->getSize().x),
-				float(event.size.height) / float(this->get_game_ptr()->m_background_sprite.getTexture()->getSize().y));
+				float(event.size.width) / float(this->get_game_ptr()->m_background_sprite.getTexture()
+				->getSize().x),
+				float(event.size.height) / float(this->get_game_ptr()->m_background_sprite.getTexture()
+				->getSize().y));
 			break;
 		}
 		// If user pressed a specific key then handle it.
@@ -89,8 +105,8 @@ void MainGameState::inputProcess()
 			// Pan the camera when player keep pressing the mouse middle button.
 			if (m_action_state == GameActionEnum::CAMERA_PANNING)
 			{
-				sf::Vector2f pos(sf::Vector2f(sf::Mouse::getPosition(this->get_game_ptr()->m_game_window) -
-					m_prev_mouse_pos));
+				sf::Vector2f pos(sf::Vector2f(sf::Mouse::getPosition(this->get_game_ptr()
+				->m_game_window) - m_prev_mouse_pos));
 				/* Main game view should move towards the opposite direction according to the zoom level since moving
 				 * a camera to the right is the same as moving everything else to the left. */
 				m_view.move(-1.f * pos * m_zoom_level);
@@ -105,24 +121,26 @@ void MainGameState::inputProcess()
 					(this->get_game_ptr()->m_game_window), m_view));
 				/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 				 * Additional 0.5 is a compensation offset for integer truncation. */
-				m_select_end_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
-					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) - (0.5 * m_game_map.m_width) - 0.5;
-				m_select_end_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
-					(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) + (0.5 * m_game_map.m_width) + 0.5;
+				m_select_end_pos.x = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) +
+					(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) - (0.5 * m_game_map_ptr->m_width) -
+					INT_TRUNCATION_OFFSET;
+				m_select_end_pos.y = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) -
+					(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) + (0.5 * m_game_map_ptr->m_width) +
+					INT_TRUNCATION_OFFSET;
 
 				// Deselected all tiles first.
-				m_game_map.deselect_tiles();
+				m_game_map_ptr->deselect_tiles();
 
 				/* If current selected tile is of grass type, then current player action is considered to destroy all
 				 * exist tiles rather than grass and water tiles. Therefore, grass and water tiles are considered as
 				 * black list and all other tiles should be selected. */
 				if (m_curr_selected_tile_ptr->m_tileType == TileTypeEnum::GRASS)
-					m_game_map.select(m_select_start_pos, m_select_end_pos, {TileTypeEnum::GRASS,
-																			 TileTypeEnum::WATER});
+					m_game_map_ptr->select(m_select_start_pos, m_select_end_pos, { TileTypeEnum::GRASS,
+																				  TileTypeEnum::WATER});
 				/* Else current player action is considered to build new tiles. And new tiles can only be built on the
 				 * grass tiles. Therefore, all other 6 type of tiles are considered as black list. */
 				else
-					m_game_map.select(m_select_start_pos, m_select_end_pos,
+					m_game_map_ptr->select(m_select_start_pos, m_select_end_pos,
 						{TileTypeEnum::WATER, TileTypeEnum::ROAD, TileTypeEnum::FOREST,
 						 TileTypeEnum::RESIDENTIAL, TileTypeEnum::COMMERCIAL, TileTypeEnum::INDUSTRIAL});
 			}
@@ -150,14 +168,14 @@ void MainGameState::inputProcess()
 				{
 					m_action_state = GameActionEnum::TILE_SELECTING;
 					// Convert and store mouse's screen position to world position.
-					sf::Vector2f mouse_pos(this->get_game_ptr()->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
-						(this->get_game_ptr()->m_game_window), m_view));
+					sf::Vector2f mouse_pos(this->get_game_ptr()->m_game_window.mapPixelToCoords
+					(sf::Mouse::getPosition(this->get_game_ptr()->m_game_window), m_view));
 					/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 					 * Additional 0.5 is a compensation offset for integer truncation. */
-					m_select_start_pos.x = (mouse_pos.y / m_game_map.m_tile_half_width) +
-						(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) - (0.5 * m_game_map.m_width) - 0.5;
-					m_select_start_pos.y = (mouse_pos.y / m_game_map.m_tile_half_width) -
-						(mouse_pos.x / (2 * m_game_map.m_tile_half_width)) + (0.5 * m_game_map.m_width) + 0.5;
+					m_select_start_pos.x = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) +
+						(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) - (0.5 * m_game_map_ptr->m_width) - 0.5;
+					m_select_start_pos.y = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) -
+						(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) + (0.5 * m_game_map_ptr->m_width) + 0.5;
 				}
 			}
 			else if (event.mouseButton.button == sf::Mouse::Right)
@@ -166,7 +184,7 @@ void MainGameState::inputProcess()
 				if (m_action_state == GameActionEnum::TILE_SELECTING)
 				{
 					m_action_state = GameActionEnum::NONE;
-					m_game_map.deselect_tiles();
+					m_game_map_ptr->deselect_tiles();
 				}
 			}
 			break;
@@ -183,7 +201,7 @@ void MainGameState::inputProcess()
 				if (m_action_state == GameActionEnum::TILE_SELECTING)
 				{
 					m_action_state = GameActionEnum::NONE;
-					m_game_map.deselect_tiles();
+					m_game_map_ptr->deselect_tiles();
 				}
 			}
 			break;
@@ -194,14 +212,14 @@ void MainGameState::inputProcess()
 			// If mouse wheel scroll downward, double the zoom level of game view(view bigger, object smaller).
 			if (event.mouseWheelScroll.delta < 0)
 			{
-				m_view.zoom(2.f);
-				m_zoom_level *= 2.f;
+				m_view.zoom(DOWNWARD_SCROLL_FACTOR);
+				m_zoom_level *= DOWNWARD_SCROLL_FACTOR;
 			}
 			// If mouse wheel move upward, halve the zoom level of game view(view smaller, object bigger).
 			else
 			{
-				m_view.zoom(0.5f);
-				m_zoom_level *= 0.5f;
+				m_view.zoom(UPWARD_SCROLL_FACTOR);
+				m_zoom_level *= UPWARD_SCROLL_FACTOR;
 			}
 			break;
 		}

@@ -2,6 +2,26 @@
 #include "MainGameState.hpp"
 #include "Gui.hpp"
 
+// Store the dimension of each GuiEntry object's shape.
+constexpr unsigned int GUI_ENTRY_WIDTH(192);
+constexpr unsigned int GUI_ENTRY_HEIGHT(32);
+
+constexpr unsigned int GUI_ORIGIN_WIDTH(GUI_ENTRY_WIDTH/2);
+constexpr unsigned int GUI_ORIGIN_HEIGHT(GUI_ENTRY_HEIGHT/2);
+
+// Store GUI object' s text padding size.
+constexpr unsigned int GUI_TEXT_PADDING(4);
+
+// Store button GuiStyle object's name.
+const std::string BUTTON_GUI_STYLE_NAME("button");
+
+// Store load game GuiEntry object's name and activated message.
+const std::string LOAD_GAME_GUI_ENTRY_NAME("Load Game");
+const std::string LOAD_GAME_GUI_ENTRY_MSG("message:load_game");
+
+// Store GUI object's name.
+const std::string GUI_NAME("Load Game");
+
 MainMenuGameState::MainMenuGameState(std::shared_ptr<Game> game_ptr)
 {
 	// Store the game pointer.
@@ -15,16 +35,17 @@ MainMenuGameState::MainMenuGameState(std::shared_ptr<Game> game_ptr)
 	m_view.setCenter(half_main_menu_view_size);
 
 	// Create and store the new Gui object.
-	m_str_Gui_map.emplace("menu", std::make_shared<Gui>(Gui(sf::Vector2f(192, 32), 4,
-		false, *(this->get_game_ptr()->getGuiStylePtr("button")),
-		{std::make_pair("Load Game", "message:load_game")})));
+	m_str_Gui_map.emplace(GUI_NAME, std::make_shared<Gui>(Gui(sf::Vector2f(GUI_ENTRY_WIDTH,
+		GUI_ENTRY_HEIGHT), GUI_TEXT_PADDING,
+		false, *(this->get_game_ptr()->getGuiStylePtr(BUTTON_GUI_STYLE_NAME)),
+		{std::make_pair(LOAD_GAME_GUI_ENTRY_NAME, LOAD_GAME_GUI_ENTRY_MSG)})));
 
 	// Set Gui at the center position of the view.
-	m_str_Gui_map.at("menu")->setPosition(half_main_menu_view_size);
+	m_str_Gui_map.at(GUI_NAME)->setPosition(half_main_menu_view_size);
 	// Set Gui's origin to its center.
-	m_str_Gui_map.at("menu")->setOrigin(96, 32*1/2);
+	m_str_Gui_map.at(GUI_NAME)->setOrigin(GUI_ORIGIN_WIDTH, GUI_ORIGIN_HEIGHT);
 	// Mark the Gui visible and place all the entries in the correct location.
-	m_str_Gui_map.at("menu")->show();
+	m_str_Gui_map.at(GUI_NAME)->show();
 }
 
 void MainMenuGameState::render(const float dt)
@@ -71,9 +92,10 @@ void MainMenuGameState::inputProcess()
 			// Reset game view's size and center.
 			m_view.setSize(new_view_size);
 
-			// Set background sprite's position to window position (0, 0) related world position inside default(main menu) view.
-			this->get_game_ptr()->m_background_sprite.setPosition(this->get_game_ptr()->m_game_window.mapPixelToCoords(sf::Vector2i(0,
-				0), m_view));
+			/* Set background sprite's position to window position (0, 0) related world position inside
+			 * default(main menu) view. */
+			this->get_game_ptr()->m_background_sprite.setPosition(this->get_game_ptr()->
+			m_game_window.mapPixelToCoords(sf::Vector2i(0,0), m_view));
 
 			// Get half of new view dimension.
 			sf::Vector2f new_half_view_pos(new_view_size/2.f);
@@ -81,12 +103,14 @@ void MainMenuGameState::inputProcess()
 			new_half_view_pos = this->get_game_ptr()->m_game_window.mapPixelToCoords(sf::Vector2i
 				(new_half_view_pos), m_view);
 			// Set specified Gui at the center of the screen again.
-			m_str_Gui_map.at("menu")->setPosition(new_half_view_pos);
+			m_str_Gui_map.at(GUI_NAME)->setPosition(new_half_view_pos);
 
 			// Set background sprite to fill the entire window.
 			this->get_game_ptr()->m_background_sprite.setScale(
-				float(event.size.width) / float(this->get_game_ptr()->m_background_sprite.getTexture()->getSize().x),
-				float(event.size.height) / float(this->get_game_ptr()->m_background_sprite.getTexture()->getSize().y));
+				float(event.size.width) / float(this->get_game_ptr()->m_background_sprite.getTexture()->
+				getSize().x),
+				float(event.size.height) / float(this->get_game_ptr()->m_background_sprite.getTexture()->
+				getSize().y));
 			break;
 		}
 		// If user pressed a specific key then handle it.
@@ -100,7 +124,8 @@ void MainMenuGameState::inputProcess()
 		// Highlight mouse hover GuiEntry object.
 		case sf::Event::MouseMoved:
 		{
-			m_str_Gui_map.at("menu")->highlight_entry(m_str_Gui_map.at("menu")->get_gui_entry_idx(mouse_pos));
+			m_str_Gui_map.at(GUI_NAME)->highlight_entry(m_str_Gui_map.at(GUI_NAME)->
+			get_gui_entry_idx(mouse_pos));
 		}
 		// Handle left mouse button pressed case.
 		case sf::Event::MouseButtonPressed:
@@ -109,8 +134,8 @@ void MainMenuGameState::inputProcess()
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
 				// Load game if user press the "load game" GuiEntry object.
-				std::string msg = m_str_Gui_map.at("menu")->get_mouse_pos_entry_msg(mouse_pos);
-				if (msg == "message:load_game")
+				std::string msg = m_str_Gui_map.at(GUI_NAME)->get_mouse_pos_entry_msg(mouse_pos);
+				if (msg == LOAD_GAME_GUI_ENTRY_MSG)
 					this->loadGame();
 			}
 		}
