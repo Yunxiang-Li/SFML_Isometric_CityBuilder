@@ -1,17 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "MainGameState.hpp"
-
-// Store game map's dimension.
-constexpr unsigned int GAME_MAP_WIDTH(64);
-constexpr unsigned int GAME_MAP_HEIGHT(64);
-
-// Store zoom factor according to mouse scroll.
-constexpr float DOWNWARD_SCROLL_FACTOR(2.f);
-constexpr float UPWARD_SCROLL_FACTOR(0.5f);
-
-// Store integer truncation compensation.
-constexpr float INT_TRUNCATION_OFFSET(0.5f);
+#include "Utility.hpp"
 
 MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(GameActionEnum::NONE)
 {
@@ -26,11 +16,11 @@ MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(Ga
 	m_gui_view.setCenter(game_view_size * 0.5f);
 
 	// Store a 64x64 game map from file city_map.dat.
-	m_game_map_ptr = std::move(std::make_shared<Map>(Map("../resources/binary/city_map.dat",
+	m_game_map_ptr = std::move(std::make_shared<Map>(Map(MAP_BINARY_FILE_PATH,
 		GAME_MAP_WIDTH,GAME_MAP_HEIGHT, this->get_game_ptr()->m_str_tile_map)));
 	// Center the camera on the isometric map.
-	sf::Vector2f camera_center(m_game_map_ptr->m_width, m_game_map_ptr->m_height * 0.5);
-	camera_center *= static_cast<float>(m_game_map_ptr->m_tile_half_width);
+	sf::Vector2f camera_center(m_game_map_ptr->get_width(), m_game_map_ptr->get_height() * 0.5);
+	camera_center *= static_cast<float>(m_game_map_ptr->get_tile_half_width());
 	m_view.setCenter(camera_center);
 
 	// Initialize current selected tile as a Grass tile.
@@ -121,11 +111,11 @@ void MainGameState::inputProcess()
 					(this->get_game_ptr()->m_game_window), m_view));
 				/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 				 * Additional 0.5 is a compensation offset for integer truncation. */
-				m_select_end_pos.x = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) +
-					(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) - (0.5 * m_game_map_ptr->m_width) -
+				m_select_end_pos.x = (mouse_pos.y / m_game_map_ptr->get_tile_half_width()) +
+					(mouse_pos.x / (2 * m_game_map_ptr->get_tile_half_width())) - (0.5 * m_game_map_ptr->get_width()) -
 					INT_TRUNCATION_OFFSET;
-				m_select_end_pos.y = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) -
-					(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) + (0.5 * m_game_map_ptr->m_width) +
+				m_select_end_pos.y = (mouse_pos.y / m_game_map_ptr->get_tile_half_width()) -
+					(mouse_pos.x / (2 * m_game_map_ptr->get_tile_half_width())) + (0.5 * m_game_map_ptr->get_width()) +
 					INT_TRUNCATION_OFFSET;
 
 				// Deselected all tiles first.
@@ -172,10 +162,12 @@ void MainGameState::inputProcess()
 					(sf::Mouse::getPosition(this->get_game_ptr()->m_game_window), m_view));
 					/* Inverse of algebra formula inside Map::render function(change world coordinate to tile coordinate).
 					 * Additional 0.5 is a compensation offset for integer truncation. */
-					m_select_start_pos.x = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) +
-						(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) - (0.5 * m_game_map_ptr->m_width) - 0.5;
-					m_select_start_pos.y = (mouse_pos.y / m_game_map_ptr->m_tile_half_width) -
-						(mouse_pos.x / (2 * m_game_map_ptr->m_tile_half_width)) + (0.5 * m_game_map_ptr->m_width) + 0.5;
+					m_select_start_pos.x = (mouse_pos.y / m_game_map_ptr->get_tile_half_width()) +
+						(mouse_pos.x / (2 * m_game_map_ptr->get_tile_half_width())) -
+						(0.5 * m_game_map_ptr->get_width()) - 0.5;
+					m_select_start_pos.y = (mouse_pos.y / m_game_map_ptr->get_tile_half_width()) -
+						(mouse_pos.x / (2 * m_game_map_ptr->get_tile_half_width())) +
+						(0.5 * m_game_map_ptr->get_width()) + 0.5;
 				}
 			}
 			else if (event.mouseButton.button == sf::Mouse::Right)

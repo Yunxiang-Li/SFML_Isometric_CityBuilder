@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "GameState.hpp"
 #include "GuiStyle.hpp"
+#include "Utility.hpp"
 
 Game::Game()
 {
@@ -98,23 +99,24 @@ void Game::load_tiles()
 
 	/* For grass tile and forest tile, there is only 1 instant animation. Initial height is 1 half tile width,
 	 * initial cost is 50, no population allowed, max level is 1.*/
-	m_str_tile_map["grass"] = Tile(m_tile_half_width_pixel, GRASS_HALF_TILE_WIDTH_NUM,
-	TextureManager::getInstance()->getTextureRef(GRASS_TILE_TEXTURE_NAME),{default_anim},
-	TileTypeEnum::GRASS,GRASS_TILE_COST, GRASS_CURR_LEVEL_POPULATION_LIMIT,
-	GRASS_TILE_MAX_LEVEL);
+	m_str_tile_map[GRASS_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
+		GRASS_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
+		getTextureRef(GRASS_TILE_TEXTURE_NAME),{default_anim},TileTypeEnum::GRASS,
+		GRASS_TILE_COST, GRASS_CURR_LEVEL_POPULATION_LIMIT,GRASS_TILE_MAX_LEVEL);
 
 	// For forest tile, initial height is 1 half tile width, initial cost is 100, max level is 1.
-	m_str_tile_map["forest"] = Tile(m_tile_half_width_pixel, FOREST_HALF_TILE_WIDTH_NUM,
-	TextureManager::getInstance()->getTextureRef(FOREST_TILE_TEXTURE_NAME),{default_anim},
-	TileTypeEnum::FOREST,FOREST_TILE_COST, FOREST_CURR_LEVEL_POPULATION_LIMIT,
-	FOREST_TILE_MAX_LEVEL);
+	m_str_tile_map[FOREST_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
+		FOREST_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
+		getTextureRef(FOREST_TILE_TEXTURE_NAME),{default_anim},TileTypeEnum::FOREST,
+		FOREST_TILE_COST, FOREST_CURR_LEVEL_POPULATION_LIMIT,FOREST_TILE_MAX_LEVEL);
 
 	/* For water tile, there are 3 animation, each animation consists of 4 frames, each frame takes 0.5 seconds.
 	 * Initial height is 1 half tile width, initial cost is 0, no population allowed, max level is 1.*/
-	m_str_tile_map["water"] = Tile(m_tile_half_width_pixel, WATER_HALF_TILE_WIDTH_NUM,
-	TextureManager::getInstance()->getTextureRef(WATER_TILE_TEXTURE_NAME),
-	{Animation(WATER_ANIM_START_FRAME, WATER_ANIM_END_FRAME,
-		WATER_ANIM_EACH_FRAME_DURATION),Animation(WATER_ANIM_START_FRAME,
+	m_str_tile_map[WATER_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
+		WATER_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
+		getTextureRef(WATER_TILE_TEXTURE_NAME),{Animation(WATER_ANIM_START_FRAME,
+			WATER_ANIM_END_FRAME,WATER_ANIM_EACH_FRAME_DURATION),
+												Animation(WATER_ANIM_START_FRAME,
 			WATER_ANIM_END_FRAME, WATER_ANIM_EACH_FRAME_DURATION),
 	 Animation(WATER_ANIM_START_FRAME, WATER_ANIM_END_FRAME,
 		 WATER_ANIM_EACH_FRAME_DURATION)}, TileTypeEnum::WATER,
@@ -122,7 +124,7 @@ void Game::load_tiles()
 
 	/* For residential tile, there are 6 instant animation. Initial height is 2 half tile width, initial cost is 300,
 	 * initial population is 50, max level is 6.*/
-	m_str_tile_map["residential"] = Tile(m_tile_half_width_pixel,
+	m_str_tile_map[RESIDENTIAL_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
 		RESIDENTIAL_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
 		getTextureRef(RESIDENTIAL_TILE_TEXTURE_NAME),{default_anim, default_anim, default_anim,
 	default_anim, default_anim, default_anim},TileTypeEnum::RESIDENTIAL,RESIDENTIAL_TILE_COST,
@@ -130,7 +132,7 @@ void Game::load_tiles()
 
 	/* For commercial tile, there are 4 instant animation. Initial height is 2 half tile width, initial cost is 300,
  	 * initial population is 50, max level is 4.*/
-	m_str_tile_map["commercial"] = Tile(m_tile_half_width_pixel,
+	m_str_tile_map[COMMERCIAL_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
 		COMMERCIAL_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
 		getTextureRef(COMMERCIAL_TILE_TEXTURE_NAME),{default_anim, default_anim,
 	default_anim, default_anim},TileTypeEnum::COMMERCIAL,COMMERCIAL_TILE_COST,
@@ -138,7 +140,7 @@ void Game::load_tiles()
 
 	/* For industrial tile, there are 3 instant animation. Initial height is 2 half tile width, initial cost is 300,
      * initial population is 50, max level is 4.*/
-	m_str_tile_map["industrial"] = Tile(m_tile_half_width_pixel,
+	m_str_tile_map[INDUSTRIAL_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
 		INDUSTRIAL_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
 		getTextureRef(INDUSTRIAL_TILE_TEXTURE_NAME),{default_anim, default_anim,
 	default_anim, default_anim},TileTypeEnum::INDUSTRIAL,INDUSTRIAL_TILE_COST,
@@ -146,9 +148,10 @@ void Game::load_tiles()
 
 	/* For road tile, there are 11 instant animation. Initial height is 1 half tile width, initial cost is 100,
 	 * no population allowed, max level is 1.*/
-	m_str_tile_map["road"] = Tile(m_tile_half_width_pixel, ROAD_HALF_TILE_WIDTH_NUM,
-	TextureManager::getInstance()->getTextureRef(ROAD_TILE_TEXTURE_NAME),
-	{default_anim, default_anim, default_anim, default_anim, default_anim, default_anim, default_anim,
+	m_str_tile_map[ROAD_TILE_TEXTURE_NAME] = Tile(m_tile_half_width_pixel,
+		ROAD_HALF_TILE_WIDTH_NUM,TextureManager::getInstance()->
+		getTextureRef(ROAD_TILE_TEXTURE_NAME),{default_anim, default_anim, default_anim,
+											   default_anim, default_anim, default_anim, default_anim,
 	 default_anim, default_anim, default_anim, default_anim},TileTypeEnum::ROAD,ROAD_TILE_COST,
 	 ROAD_CURR_LEVEL_POPULATION_LIMIT, ROAD_TILE_MAX_LEVEL);
 }

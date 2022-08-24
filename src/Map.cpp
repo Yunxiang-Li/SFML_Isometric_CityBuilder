@@ -1,27 +1,6 @@
 #include <fstream>
 #include "Map.hpp"
-
-// Define each tile object's production.
-constexpr int EACH_TILE_PRODUCTION = 255;
-
-// Define all possible directions.
-constexpr int TOP_RIGHT_BOTTOM_LEFT_DIR = 0;
-constexpr int TOP_RIGHT_DIR = TOP_RIGHT_BOTTOM_LEFT_DIR;
-constexpr int BOTTOM_LEFT_DIR = TOP_RIGHT_BOTTOM_LEFT_DIR;
-
-constexpr int TOP_LEFT_BOTTOM_RIGHT_DIR = 1;
-constexpr int TOP_LEFT_DIR = TOP_LEFT_BOTTOM_RIGHT_DIR;
-constexpr int BOTTOM_RIGHT_DIR = TOP_LEFT_BOTTOM_RIGHT_DIR;
-
-constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 2;
-constexpr int TOP_RIGHT_BOTTOM_RIGHT_DIR = 3;
-constexpr int TOP_LEFT_BOTTOM_LEFT_DIR = 4;
-constexpr int TOP_LEFT_TOP_RIGHT_DIR = 5;
-constexpr int BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 6;
-constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_DIR = 7;
-constexpr int TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 8;
-constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR = 9;
-constexpr int TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR = 10;
+#include "Utility.hpp"
 
 Map::Map(const std::string& file_name, unsigned int width, unsigned int height,
 	std::unordered_map<std::string, Tile>& str_tile_map)
@@ -44,7 +23,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 		// Set each tile object's initial production to be 255.
 		m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
 		// Initialize each selected tile's condition to zero(not selected).
-		m_selected_tiles_condition_vec.emplace_back(0);
+		m_selected_tiles_condition_vec.emplace_back(TILE_NOT_SELECTED_FLAG);
 
 		// Read and store each tile object's tile type.
 		TileTypeEnum tileType;
@@ -55,25 +34,25 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 		{
 		case TileTypeEnum::VOID:
 		case TileTypeEnum::FOREST:
-			m_tiles_vec.emplace_back(str_tile_map.at("forest"));
+			m_tiles_vec.emplace_back(str_tile_map.at(FOREST_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::WATER:
-			m_tiles_vec.emplace_back(str_tile_map.at("water"));
+			m_tiles_vec.emplace_back(str_tile_map.at(WATER_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::RESIDENTIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at("residential"));
+			m_tiles_vec.emplace_back(str_tile_map.at(RESIDENTIAL_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::COMMERCIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at("commercial"));
+			m_tiles_vec.emplace_back(str_tile_map.at(COMMERCIAL_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::INDUSTRIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at("industrial"));
+			m_tiles_vec.emplace_back(str_tile_map.at(INDUSTRIAL_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::ROAD:
-			m_tiles_vec.emplace_back(str_tile_map.at("road"));
+			m_tiles_vec.emplace_back(str_tile_map.at(ROAD_TILE_TEXTURE_NAME));
 			break;
 		case TileTypeEnum::GRASS:
-			m_tiles_vec.emplace_back(str_tile_map.at("residential"));
+			m_tiles_vec.emplace_back(str_tile_map.at(RESIDENTIAL_TILE_TEXTURE_NAME));
 			break;
 		default:
 			break;
@@ -122,8 +101,8 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 			m_tiles_vec[y * m_width + x].m_sprite.setPosition(pos);
 
 			// If current tile is selected, set its color to be dark, white color otherwise.
-			if (m_selected_tiles_condition_vec.at(y * m_width + x) == 1)
-				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color(0x7d, 0x7d, 0x7d));
+			if (m_selected_tiles_condition_vec.at(y * m_width + x) == TILE_SELECTED_FLAG)
+				m_tiles_vec[y * m_width + x].m_sprite.setColor(TILE_SELECTED_COLOR);
 			else
 				m_tiles_vec[y * m_width + x].m_sprite.setColor(sf::Color::White);
 
@@ -319,7 +298,7 @@ void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vect
 		for (int x = start_pos.x; x <= end_pos.x; ++x)
 		{
 			// Mark each selected tile object's condition to 1(selected) first.
-			m_selected_tiles_condition_vec[y * m_width + x] = 1;
+			m_selected_tiles_condition_vec[y * m_width + x] = TILE_SELECTED_FLAG;
 			// Increment the selected tiles' number first.
 			++m_selected_tiles_num;
 
@@ -329,7 +308,7 @@ void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vect
 				if (m_tiles_vec[y * m_width + x].m_tileType == tile_type)
 				{
 					// Set related selected tile's condition and decrement the selected tiles' number.
-					m_selected_tiles_condition_vec[y * m_width + x] = 2;
+					m_selected_tiles_condition_vec[y * m_width + x] = TILE_INVALID_FLAG;
 					--m_selected_tiles_num;
 					break;
 				}
@@ -342,4 +321,19 @@ void Map::deselect_tiles()
 	for (auto val : m_selected_tiles_condition_vec)
 		val = 0;
 	m_selected_tiles_num = 0;
+}
+
+unsigned int Map::get_width() const
+{
+	return m_width;
+}
+
+unsigned int Map::get_height() const
+{
+	return m_height;
+}
+
+unsigned int Map::get_tile_half_width() const
+{
+	return m_tile_half_width;
 }

@@ -88,6 +88,26 @@ class Map
 	 */
 	void deselect_tiles();
 
+	/**
+	 * Retrieve the map's width.
+	 * @return A unsigned integer indicates the map's width.
+	 */
+	unsigned int get_width() const;
+
+	/**
+	 * Retrieve the map's height.
+	 * @return A unsigned integer indicates the map's height.
+	 */
+	unsigned int get_height() const;
+
+	/**
+	 * Retrieve the length of Tile object's half width.
+	 * @return A unsigned integer indicates the length of Tile object's half width.
+	 */
+	unsigned int get_tile_half_width() const;
+
+ private:
+
 	// Dimension of the map.
 	unsigned int m_width{0};
 	unsigned int m_height{0};
@@ -105,7 +125,6 @@ class Map
 	 * related tile is selected and 2 means related tile is invalid to be selected/de-selected. */
 	std::vector<char> m_selected_tiles_condition_vec{};
 
- private:
 	/**
 	 * Split the map into different regions and region_idx them according to what region they fall in.
 	 * @param whitelist_vec A const reference of const vector contains all different TileTypes that can make up the

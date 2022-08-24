@@ -1,8 +1,5 @@
 #include "Tile.hpp"
-
-// Help generate random number.
-constexpr unsigned int RAND_BASE_NUM = 1e3;
-constexpr unsigned int LEVEL_BASE_NUM = 1e2;
+#include "Utility.hpp"
 
 void Tile::render(sf::RenderWindow& render_window, float dt)
 {

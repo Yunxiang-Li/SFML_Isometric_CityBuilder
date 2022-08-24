@@ -1,26 +1,7 @@
 #include "MainMenuGameState.hpp"
 #include "MainGameState.hpp"
 #include "Gui.hpp"
-
-// Store the dimension of each GuiEntry object's shape.
-constexpr unsigned int GUI_ENTRY_WIDTH(192);
-constexpr unsigned int GUI_ENTRY_HEIGHT(32);
-
-constexpr unsigned int GUI_ORIGIN_WIDTH(GUI_ENTRY_WIDTH/2);
-constexpr unsigned int GUI_ORIGIN_HEIGHT(GUI_ENTRY_HEIGHT/2);
-
-// Store GUI object' s text padding size.
-constexpr unsigned int GUI_TEXT_PADDING(4);
-
-// Store button GuiStyle object's name.
-const std::string BUTTON_GUI_STYLE_NAME("button");
-
-// Store load game GuiEntry object's name and activated message.
-const std::string LOAD_GAME_GUI_ENTRY_NAME("Load Game");
-const std::string LOAD_GAME_GUI_ENTRY_MSG("message:load_game");
-
-// Store GUI object's name.
-const std::string GUI_NAME("Load Game");
+#include "Utility.hpp"
 
 MainMenuGameState::MainMenuGameState(std::shared_ptr<Game> game_ptr)
 {
