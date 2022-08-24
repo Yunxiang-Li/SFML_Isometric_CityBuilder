@@ -67,3 +67,8 @@ std::string tileTypeToStr(TileTypeEnum tile_type)
 	}
 	return res_str;
 }
+
+void Tile::set_level(unsigned int level)
+{
+	m_level = level;
+}

@@ -198,35 +198,35 @@ void Map::updateDirection(TileTypeEnum tileType)
 			// Change the tile level depending on related adjacent elements' values.
 			if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1] &&
 				adjacent_tiles_arr[2][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[0][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_TOP_RIGHT_BOTTOM_LEFT_DIR);
 			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2] && adjacent_tiles_arr[2][1])
-				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
-				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
-				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[1][2])
-				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_LEFT_DIR;
+				m_tiles_vec[pos].set_level(TOP_RIGHT_BOTTOM_LEFT_DIR);
 			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[2][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][0])
-				m_tiles_vec[pos].m_level = TOP_RIGHT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_RIGHT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[0][1] && adjacent_tiles_arr[1][2])
-				m_tiles_vec[pos].m_level = TOP_LEFT_BOTTOM_LEFT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_BOTTOM_LEFT_DIR);
 			else if (adjacent_tiles_arr[1][0] && adjacent_tiles_arr[0][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_TOP_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_TOP_RIGHT_DIR);
 			else if (adjacent_tiles_arr[2][1] && adjacent_tiles_arr[1][2])
-				m_tiles_vec[pos].m_level = BOTTOM_LEFT_BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(BOTTOM_LEFT_BOTTOM_RIGHT_DIR);
 			else if (adjacent_tiles_arr[1][0])
-				m_tiles_vec[pos].m_level = TOP_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(TOP_RIGHT_DIR);
 			else if (adjacent_tiles_arr[1][2])
-				m_tiles_vec[pos].m_level = BOTTOM_LEFT_DIR;
+				m_tiles_vec[pos].set_level(BOTTOM_LEFT_DIR);
 			else if (adjacent_tiles_arr[0][1])
-				m_tiles_vec[pos].m_level = TOP_LEFT_DIR;
+				m_tiles_vec[pos].set_level(TOP_LEFT_DIR);
 			else if (adjacent_tiles_arr[2][1])
-				m_tiles_vec[pos].m_level = BOTTOM_RIGHT_DIR;
+				m_tiles_vec[pos].set_level(BOTTOM_RIGHT_DIR);
 		}
 	}
 }
