@@ -21,6 +21,7 @@ const std::string COMMERCIAL_TILE_TEXTURE_NAME("commercial");
 const std::string INDUSTRIAL_TILE_TEXTURE_NAME("industrial");
 const std::string ROAD_TILE_TEXTURE_NAME("road");
 const std::string GRASS_TILE_TEXTURE_NAME("grass");
+const std::string VOID_TILE_TEXTURE_NAME("void");
 
 // Store the image files' path of seven types of tiles and the background.
 const std::string GAME_BACKGROUND_TEXTURE_PATH("../resources/images/background.png");

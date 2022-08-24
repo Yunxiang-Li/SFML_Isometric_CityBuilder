@@ -77,29 +77,37 @@ class Tile
 	 */
 	std::string getCost() const;
 
+	/**
+	 * Set current tile object's level.
+	 * @param level A unsigned integer indicates the level value to be set.
+	 */
+	void set_level(unsigned int level);
+
 	// Current Tile object's tile type.
 	TileTypeEnum m_tileType{};
 	/* The current level of Tile object which affects Tile object's appearance. For Zone(Road, Industrial and
-	 * Commercial) tiles, this value will also affect tile's maximum population. */
+ 	 * Commercial) tiles, this value will also affect tile's maximum population. */
 	unsigned int m_level{0};
 	/* Indicates current tile object's related region's index, tiles in the same region are connected and can have
 	 * different tile types. First element is used for transport.  m_region_arr[region_type] = region_idx means current
 	 * tile object is inside the region_idxth's region of region_type. */
 	unsigned int m_region_arr[1]{0};
-	// Placement cost of each tile.
-	unsigned int m_cost{0};
 	// Current residents inside the tile.
 	double m_population{0.0};
+	// Overall production of the tile.
+	float m_total_production{0.f};
+	// The sprite of the current tile object.
+	sf::Sprite m_sprite;
+
+ private:
+	// Placement cost of each tile.
+	unsigned int m_cost{0};
 	// Indicates the population limit of current level. This value will be updated according to Tile's current level.
 	unsigned int m_curr_level_population_limit{0};
 	// Maximum level of current Tile object.
 	unsigned int m_max_level{0};
 	// Current tile's overall production per work and per day.
 	float m_production_per_worker_per_day{0.f};
-	// Overall production of the tile.
-	float m_total_production{0.f};
-	// The sprite of the current tile object.
-	sf::Sprite m_sprite;
 	// An AnimationHandler object
 	std::shared_ptr<AnimationHandler> m_animationHandler_ptr;
 };

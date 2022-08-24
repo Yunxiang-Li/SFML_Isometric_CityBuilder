@@ -44,26 +44,34 @@ std::string tileTypeToStr(TileTypeEnum tile_type)
 	switch (tile_type)
 	{
 		case TileTypeEnum::INDUSTRIAL:
-			res_str = "Industrial";
+			res_str = INDUSTRIAL_TILE_TEXTURE_NAME;
 			break;
 		case TileTypeEnum::COMMERCIAL:
-			res_str = "Commercial";
+			res_str = COMMERCIAL_TILE_TEXTURE_NAME;
 			break;
 		case TileTypeEnum::RESIDENTIAL:
-			res_str = "Residential";
+			res_str = RESIDENTIAL_TILE_TEXTURE_NAME;
 			break;
 		case TileTypeEnum::GRASS:
-			res_str = "Grass";
+			res_str = GRASS_TILE_TEXTURE_NAME;
 			break;
 		case TileTypeEnum::FOREST:
-			res_str = "Forest";
+			res_str = FOREST_TILE_TEXTURE_NAME;
 			break;
 		case TileTypeEnum::WATER:
-			res_str = "Water";
+			res_str = WATER_TILE_TEXTURE_NAME;
+			break;
+		case TileTypeEnum::ROAD:
+			res_str = ROAD_TILE_TEXTURE_NAME;
 			break;
 		default:
-			res_str = "Void";
+			res_str = VOID_TILE_TEXTURE_NAME;
 			break;
 	}
 	return res_str;
+}
+
+void Tile::set_level(unsigned int level)
+{
+	m_level = level;
 }
