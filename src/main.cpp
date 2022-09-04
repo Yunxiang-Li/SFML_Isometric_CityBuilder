@@ -1,6 +1,5 @@
 // The main entrance of the game.
 #include "MainMenuGameState.hpp"
-
 // Main entrance of the game.
 int main()
 {

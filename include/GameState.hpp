@@ -38,7 +38,7 @@ class GameState
 	 * Retrieve the game pointer.
 	 * @return A std::shared_ptr<Game> indicates the game pointer.
 	 */
-	inline std::shared_ptr<Game> get_game_ptr()
+	inline std::shared_ptr<Game> get_game_ptr() const
 	{
 		return m_game_ptr;
 	};

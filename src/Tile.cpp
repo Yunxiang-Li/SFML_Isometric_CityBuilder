@@ -18,7 +18,7 @@ void Tile::chanceLevelUp()
 	/* Check if current tile is a zone tile, and its current population reaches current maximum population,
 	 * and also current tile's level is still lower than the max level. */
 	if ((m_tileType == TileTypeEnum::RESIDENTIAL || m_tileType == TileTypeEnum::COMMERCIAL
-	|| m_tileType == TileTypeEnum::INDUSTRIAL) && (m_population == m_curr_level_population_limit * (m_level + 1))
+	|| m_tileType == TileTypeEnum::INDUSTRIAL) && (m_population == m_population_limit_per_level * (m_level + 1))
 	&& m_level < m_max_level)
 	{
 		/* (rand() % int(RAND_BASE_NUM) will range between 0 and 999. For LEVEL_BASE_NUM / (m_level + 1),
@@ -74,4 +74,9 @@ std::string tileTypeToStr(TileTypeEnum tile_type)
 void Tile::set_level(unsigned int level)
 {
 	m_level = level;
+}
+
+unsigned int Tile::get_population_limit_per_level() const
+{
+	return m_population_limit_per_level;
 }

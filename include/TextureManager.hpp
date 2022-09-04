@@ -43,7 +43,7 @@ class TextureManager
 	 * @param texture_str A const reference of std::string indicates the name of required sf::Texture object.
 	 * @return A reference of required sf::Texture object.
 	 */
-	sf::Texture& getTextureRef(const std::string& texture_str);
+	sf::Texture& getTextureRef(const std::string& texture_str) const;
 
  private:
 	/**

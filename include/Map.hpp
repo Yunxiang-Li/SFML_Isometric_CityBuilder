@@ -3,11 +3,10 @@
 #define MAP_HPP
 
 #include "Tile.hpp"
+#include "Utility.hpp"
 #include <unordered_map>
 #include <string>
 
-// Define each tile object's half width in pixels.
-constexpr unsigned int TILE_HALF_WIDTH = 8;
 /**
  * This class contains a vector of Tile objects which is responsible for all game map behaviors.
  */
@@ -58,12 +57,13 @@ class Map
 
 	/**
 	 * Checks if one position in the map is connected to another by only traversing tiles in the whitelist.
-	 * @param whitelist_vec A reference of const vector contains all different TileTypes that can make up the regions
-	 * (ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL).
-	 * @param region_type An unsigned integer indicates the index of Tile class's member m_region_arr.
-	 * Default value is 0. A certain region can have tiles of different tile types.
+	 * @param region_tiles_type_vec A reference of const vector contains all different TileTypes that can make up the
+	 * regions(ROAD, RESIDENTIAL, COMMERCIAL, INDUSTRIAL).
+	 * @param region_index An unsigned integer indicates the index of region(also index of Tile class's member
+	 * m_region_arr). Default value is 0. A certain region can have tiles of different tile types.
 	 */
-	void findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, unsigned int region_type = 0);
+	void calculateConnectedRegionsNum(const std::vector<TileTypeEnum>& region_tiles_type_vec, unsigned int region_index
+	= 0);
 
 	/**
 	 * Update the direction of directional tiles(roads, water) so that they face the correct direction.
@@ -105,6 +105,40 @@ class Map
 	 * @return A unsigned integer indicates the length of Tile object's half width.
 	 */
 	unsigned int get_tile_half_width() const;
+
+	/**
+	 * Set the tile object's half width size.
+	 * @param tile_half_width A unsigned integer indicates the tile object's half width size.
+	 */
+	void set_tile_half_width(unsigned int tile_half_width);
+
+	/**
+	 * Retrieve the idx-th selected tile's condition.
+	 * @param idx An integer indicates the index of the tile.
+	 * @return A char indicates the specified selected tile's condition(0 for de-selected, 1 for selected and 2 for
+	 * invalid to be selected/deselected).
+	 */
+	char get_selected_tile_condition(int idx) const;
+
+	/**
+	 * Get specified Tile object.
+	 * @param idx An integer indicates the index of the tile.
+	 * @return A copy of specified Tile object.
+	 */
+	Tile get_tile(int idx) const;
+
+	/**
+	 * Set specified Tile object to be identical with input Tile object.
+	 * @param idx An integer indicates the index of the tile.
+	 * @param new_tile A reference of const Tile object indicates the input Tile object.
+	 */
+	void set_tile(int idx, const Tile& new_tile);
+
+	/**
+	 * Retrieve the amount of Tile objects that construct the map.
+	 * @return A unsigned integer indicates the amount.
+	 */
+	unsigned int get_tiles_amount() const;
 
  private:
 

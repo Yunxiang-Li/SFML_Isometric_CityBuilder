@@ -45,7 +45,7 @@ class Game
 
 	/**
 	 * Retrieve the top(current) game state as a pointer of GameState object.
-	 * @return A std::unique_ptr indicates the top(current) game state.
+	 * @return A pointer of GameState indicates the top(current) game state.
 	 */
 	GameState* peek_state() const;
 

@@ -111,15 +111,15 @@ void Map::render(sf::RenderWindow& renderWindow, float dt)
 		}
 }
 
-void Map::findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, unsigned int region_type)
+void Map::calculateConnectedRegionsNum(const std::vector<TileTypeEnum>& region_tiles_type_vec, unsigned int region_index)
 {
 	// Indicates the number of input region type, starts from one.
 	unsigned int region_num{1};
 
-	/* Reset each tile object's region array's input region_type's related value to zero( which means not inside relate
+	/* Reset each tile object's region array's input region_type's related value to zero( which means not inside related
 	 * region for now). */
 	for (auto& tile : m_tiles_vec)
-		tile.m_region_arr[region_type] = 0;
+		tile.m_region_arr[region_index] = 0;
 
 	// Iterate through all tile objects.
 	for (int y = 0; y < m_height; ++y)
@@ -127,7 +127,7 @@ void Map::findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, u
 		{
 			// Check if current tile object's tile type is in the white list(can make up a region).
 			bool is_tile_type_match{false};
-			for (const auto& tileType : whitelist_vec)
+			for (const auto& tileType : region_tiles_type_vec)
 				if (tileType ==  m_tiles_vec[y * m_width + x].m_tileType)
 				{
 					is_tile_type_match = true;
@@ -135,11 +135,13 @@ void Map::findConnectedRegions(const std::vector<TileTypeEnum>& whitelist_vec, u
 				}
 			/* If the current Tile object has not yet been assigned a region_num and the tile type matches,
 			 * call DFS function. This means each DFS call will create a new region. */
-			if (m_tiles_vec[y * m_width + x].m_region_arr[region_type] == 0 && is_tile_type_match)
-				DFS(whitelist_vec, sf::Vector2i{x, y}, region_num++, region_type);
+			if (m_tiles_vec[y * m_width + x].m_region_arr[region_index] == 0 && is_tile_type_match)
+				DFS(region_tiles_type_vec, sf::Vector2i{ x, y}, region_num++,
+					region_index);
 		}
+
 	// Store the input region type's region number.
-	m_region_num_arr[region_type] = region_num;
+	m_region_num_arr[region_index] = region_num;
 }
 
 void Map::updateDirection(TileTypeEnum tileType)
@@ -336,4 +338,29 @@ unsigned int Map::get_height() const
 unsigned int Map::get_tile_half_width() const
 {
 	return m_tile_half_width;
+}
+
+void Map::set_tile_half_width(unsigned int tile_half_width)
+{
+	m_tile_half_width = tile_half_width;
+}
+
+char Map::get_selected_tile_condition(int idx) const
+{
+	return m_selected_tiles_condition_vec[idx];
+}
+
+Tile Map::get_tile(int idx) const
+{
+	return m_tiles_vec[idx];
+}
+
+void Map::set_tile(int idx, const Tile& new_tile)
+{
+	m_tiles_vec[idx] = new_tile;
+}
+
+unsigned int Map::get_tiles_amount() const
+{
+	return m_tiles_vec.size();
 }

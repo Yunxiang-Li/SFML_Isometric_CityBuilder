@@ -36,8 +36,8 @@ class Tile
 	Tile(const unsigned int tile_half_width_pixel, const unsigned int tile_height_num, sf::Texture& texture,
 		std::vector<Animation> animation_vec, const TileTypeEnum& tileType, const unsigned int cost,
 		const unsigned int curr_level_population_limit, const unsigned int max_level) : m_tileType(tileType),
-		m_cost(cost), m_curr_level_population_limit(curr_level_population_limit), m_max_level(max_level),
-		m_animationHandler_ptr(std::make_shared<AnimationHandler>())
+																						m_cost(cost), m_population_limit_per_level(curr_level_population_limit), m_max_level(max_level),
+																						m_animationHandler_ptr(std::make_shared<AnimationHandler>())
 		{
 			/* Since one texture contains at most 4 tiles, we need to set up the top left point of the current
 			 * tile sprite according to the whole texture.*/
@@ -83,10 +83,16 @@ class Tile
 	 */
 	void set_level(unsigned int level);
 
+	/**
+	 * Retrieve the tile's maximum population per level.
+	 * @return A unsigned integer indicates Tile object's maximum population per level.
+	 */
+	unsigned int get_population_limit_per_level() const;
+
 	// Current Tile object's tile type.
 	TileTypeEnum m_tileType{};
-	/* The current level of Tile object which affects Tile object's appearance. For Zone(Road, Industrial and
- 	 * Commercial) tiles, this value will also affect tile's maximum population. */
+	/* The current level of Tile object which affects Road Tile object's appearance. For Zone(Residential, Industrial
+	 * and Commercial) tiles, this value will also affect tile's maximum population. */
 	unsigned int m_level{0};
 	/* Indicates current tile object's related region's index, tiles in the same region are connected and can have
 	 * different tile types. First element is used for transport.  m_region_arr[region_type] = region_idx means current
@@ -102,8 +108,8 @@ class Tile
  private:
 	// Placement cost of each tile.
 	unsigned int m_cost{0};
-	// Indicates the population limit of current level. This value will be updated according to Tile's current level.
-	unsigned int m_curr_level_population_limit{0};
+	// Indicates the population limit per level. This value will be updated according to Tile's current level.
+	unsigned int m_population_limit_per_level{0};
 	// Maximum level of current Tile object.
 	unsigned int m_max_level{0};
 	// Current tile's overall production per work and per day.

@@ -170,4 +170,42 @@ constexpr unsigned int TILE_NOT_SELECTED_FLAG(0);
 constexpr unsigned int TILE_SELECTED_FLAG(1);
 constexpr unsigned int TILE_INVALID_FLAG(2);
 
+// Define each tile object's half width in pixels.
+constexpr unsigned int TILE_HALF_WIDTH = 8;
+
+// Define the maximum amount of people can be moved into related Tile each time.
+constexpr unsigned int CITY_MAX_MOVE_NUM(4);
+
+// Store city's birth and death rate per day.
+constexpr double CITY_BIRTH_RATE_PER_DAY(0.003);
+constexpr double CITY_DEATH_RATE_PER_DAY(0.0025);
+
+// Store city's proportion of population that can work.
+constexpr float CITY_PROPORTION_CAN_WORK(0.5f);
+
+// Store city's 3 tax rates.
+constexpr double CITY_RESIDENTIAL_TAX_RATE(0.05);
+constexpr double CITY_COMMERCIAL_TAX_RATE(0.05);
+constexpr double CITY_INDUSTRIAL_TAX_RATE(0.05);
+
+// Store city and map files' postfix.
+const std::string CITY_FILE_POSTFIX("_cfg.dat");
+const std::string MAP_FILE_POSTFIX("_map.dat");
+
+// Store all City class's property names' strings.
+const std::string CITY_WIDTH_STR("city_width");
+const std::string CITY_HEIGHT_STR("city_height");
+const std::string CITY_DAY_STR("m_day");
+const std::string CITY_HOMELESS_NUM_STR("m_homeless_num");
+const std::string CITY_UNEMPLOYMENT_NUM_STR("m_unemployment_num");
+const std::string CITY_IN_HOUSE_POPULATION_STR("m_in_house_population");
+const std::string CITY_EMPLOYMENT_NUM_STR("m_employment_num");
+const std::string CITY_BIRTH_RATE_PER_DAY_STR("m_birth_rate_per_day");
+const std::string CITY_DEATH_RATE_PER_DAY_STR("m_death_rate_per_day");
+const std::string CITY_RESIDENTIAL_TAX_RATE_STR("m_residential_tax_rate");
+const std::string CITY_COMMERCIAL_TAX_RATE_STR("m_commercial_tax_rate");
+const std::string CITY_INDUSTRIAL_TAX_RATE_STR("m_industrial_tax_rate");
+const std::string CITY_FUND_STR("m_fund");
+const std::string CITY_LAST_MONTH_EARNINGS_STR("m_last_month_earnings");
+
 #endif //UTILITY_HPP
