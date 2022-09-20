@@ -20,7 +20,7 @@ void TextureManager::loadTexture(const std::string& texture_name, const std::str
 	getInstance()->m_str_texture_map[texture_name] = texture;
 }
 
-sf::Texture& TextureManager::getTextureRef(const std::string& texture_str) const
+sf::Texture& TextureManager::getTextureRef(const std::string& texture_str)
 {
 	return getInstance()->m_str_texture_map.at(texture_str);
 }

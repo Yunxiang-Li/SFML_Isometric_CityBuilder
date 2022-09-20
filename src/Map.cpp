@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 #include "Map.hpp"
 #include "Utility.hpp"
 
@@ -17,10 +16,12 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 	m_height = height;
 
 	// Open the store eternal file in binary form to read.
-	std::ifstream input_file(file_name, std::ios::binary);
+	std::ifstream input_file(file_name, std::ios::in | std::ios::binary);
+
 	// Check if its first time we create the game map or something wrong with the game map.
 	if(input_file.fail())
 	{
+		// Generate each tile within the game map.
 		for (int pos = 0; pos < (m_width * m_height); ++pos)
 		{
 			// Set each tile object's initial production to be 255.
@@ -28,6 +29,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 			// Initialize each selected tile's condition to zero(not selected).
 			m_selected_tiles_condition_vec.emplace_back(TILE_NOT_SELECTED_FLAG);
 
+			// For each tile, 20% to be a forest tile, 20% to be a water tile and other 60% to be a grass tile.
 			switch (rand() % 10)
 			{
 			case 0:
@@ -68,6 +70,7 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 	}
 	else
 	{
+		// Load each tile object within the game map.
 		for (int pos = 0; pos < (m_width * m_height); ++pos)
 		{
 			// Set each tile object's initial production to be 255.
@@ -78,7 +81,6 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 			// Read and store each tile object's tile type.
 			TileTypeEnum tileType;
 			input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileTypeEnum));
-
 			// Set up each tile object's texture according to its tile type.
 			switch (tileType)
 			{
@@ -115,21 +117,21 @@ void Map::load(const std::string& file_name, unsigned int width, unsigned int he
 			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_population)), sizeof(double));
 			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_total_production)), sizeof(float));
 		}
+		input_file.close();
 	}
-	input_file.close();
 }
 
 void Map::save(const std::string& file_name)
 {
 	// Open the eternal file in binary form to write.
-	std::ofstream output_file(file_name, std::ios::binary);
+	std::ofstream output_file(file_name, std::ios::binary|std::ios::out);
 
 	// Store each tile object's tile type, current level, region id array, current population and total production.
 	for (auto& each_tile: m_tiles_vec)
 	{
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_tileType)), sizeof(TileTypeEnum));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_level)), sizeof(unsigned int));
-		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_arr)), sizeof(unsigned int) * 3);
+		output_file.write(reinterpret_cast<char*>(&(each_tile.m_region_arr)), sizeof(unsigned int) * 1);
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_population)), sizeof(double));
 		output_file.write(reinterpret_cast<char*>(&(each_tile.m_total_production)), sizeof(float));
 	}

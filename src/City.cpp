@@ -2,8 +2,8 @@
 #include <fstream>
 #include "City.hpp"
 #include "Tile.hpp"
+#include <random>
 #include <sstream>
-#include <iostream>
 #include "Utility.hpp"
 
 double City::getHomelessNum() const
@@ -84,7 +84,8 @@ void City::shuffleTiles()
 	// Assigns every element of m_update_order_related_tile_index_vec successive values starting from 0.
 	std::iota(m_update_order_related_tile_index_vec.begin(), m_update_order_related_tile_index_vec.end(), 0);
 	// Shuffle the m_update_order_related_tile_index_vec in random order.
-	std::random_shuffle(m_update_order_related_tile_index_vec.begin(), m_update_order_related_tile_index_vec.end());
+	std::shuffle(m_update_order_related_tile_index_vec.begin(), m_update_order_related_tile_index_vec.end(),
+		std::mt19937(std::random_device()()));
 }
 
 void City::updateTiles()
@@ -102,7 +103,7 @@ void City::load(const std::string& city_name_str, std::unordered_map<std::string
 	unsigned int city_height{0};
 
 	// Create the loaded file.
-	std::ifstream input_file(city_name_str, std::ios::in);
+	std::ifstream input_file(city_name_str, std::ios::in|std::ios::binary);
 
 	std::string each_line_str;
 	// Process each line of the input file.

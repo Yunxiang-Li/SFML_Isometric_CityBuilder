@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include <string>
+#include <utility>
 
 /**
  * This class represents the entry part of the GUI.
@@ -18,12 +19,12 @@ class GuiEntry
 
 	/**
 	 * Three parameters' constructor.
-	 * @param activated_msg A reference of const string indicates the message when the Gui entry is activated.
+	 * @param activated_msg A std::string indicates the message when the Gui entry is activated.
 	 * @param entry_shape A reference of sf::RectangleShape indicates the Gui entry's appearance.
 	 * @param text A reference of sf::Text object indicates the text displayed on the Gui entry scene.
 	 */
-	GuiEntry(const std::string& activated_msg, sf::RectangleShape& entry_shape, sf::Text& text) :
-		m_activated_msg(activated_msg), m_entry_shape(entry_shape), m_text(text) {};
+	GuiEntry(std::string activated_msg, sf::RectangleShape& entry_shape, sf::Text& text) :
+		m_activated_msg(std::move(activated_msg)), m_entry_shape(entry_shape), m_text(text) {};
 
 	// Message(string) returned when the Gui entry is activated.
 	std::string m_activated_msg;

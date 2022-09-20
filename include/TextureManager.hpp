@@ -36,14 +36,14 @@ class TextureManager
 	 * @param texture_name A const reference of std::string indicates the loaded sf::Texture object's name.
 	 * @param file_name A const reference of std::string indicates the file name.
 	 */
-	void loadTexture(const std::string& texture_name, const std::string& file_name);
+	static void loadTexture(const std::string& texture_name, const std::string& file_name);
 
 	/**
 	 * Retrieve and return the reference of sf::Texture object related to input string.
 	 * @param texture_str A const reference of std::string indicates the name of required sf::Texture object.
 	 * @return A reference of required sf::Texture object.
 	 */
-	sf::Texture& getTextureRef(const std::string& texture_str) const;
+	static sf::Texture& getTextureRef(const std::string& texture_str) ;
 
  private:
 	/**

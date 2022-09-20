@@ -202,8 +202,6 @@ class Map
 	 */
 	void DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
 		unsigned int region_type = 0);
-
-	void generate_river();
 };
 
 #endif //MAP_HPP

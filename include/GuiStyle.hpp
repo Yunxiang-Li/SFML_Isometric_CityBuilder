@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include <memory>
+#include <utility>
 
 /**
  * This class represents the style(size, color, font) of our GUI.
@@ -30,7 +31,7 @@ class GuiStyle
 	 */
 	GuiStyle(std::shared_ptr<sf::Font> font_ptr, float outline_size, sf::Color background_color,
 		sf::Color outline_color, sf::Color text_color, sf::Color background_highlight_color,
-		sf::Color outline_highlight_color, sf::Color text_highlight_color) : m_font_ptr(font_ptr),
+		sf::Color outline_highlight_color, sf::Color text_highlight_color) : m_font_ptr(std::move(font_ptr)),
 		m_outline_size(outline_size), m_background_color(background_color), m_outline_color(outline_color),
 		m_text_color(text_color), m_background_highlight_color(background_highlight_color),
 		m_outline_highlight_color(outline_highlight_color), m_text_highlight_color(text_highlight_color){};

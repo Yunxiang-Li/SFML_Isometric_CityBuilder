@@ -1,10 +1,9 @@
 #include <fstream>
-#include <iostream>
 #include "MainGameState.hpp"
 #include "Utility.hpp"
 #include "City.hpp"
 
-MainGameState::MainGameState(std::shared_ptr<Game> game_ptr) : m_action_state(GameActionEnum::NONE)
+MainGameState::MainGameState(const std::shared_ptr<Game>& game_ptr) : m_action_state(GameActionEnum::NONE)
 {
 	// Store the game pointer.
 	this->set_game_ptr(game_ptr);
@@ -154,18 +153,19 @@ void MainGameState::inputProcess()
 	sf::Vector2f mouse_pos_in_gui_view(this->get_game_ptr()->m_game_window.mapPixelToCoords(
 		sf::Mouse::getPosition(this->get_game_ptr()->m_game_window), m_gui_view));
 
-	sf::Event event;
+	sf::Event event{};
 	// Check if there is a pending sf::Event object.
 	while (this->get_game_ptr()->m_game_window.pollEvent(event))
 	{
 		// Check the event type.
 		switch (event.type)
 		{
-		// If user click the top right close button, then close the game window.
+		// If user click the top right close button, then close the game window and save the current map.
 		case sf::Event::Closed:
 		{
 			this->get_game_ptr()->m_game_window.close();
-			break;;
+			m_game_city_ptr->save(CITY_NAME_STR);
+			break;
 		}
 		// If user resize the window size.
 		case sf::Event::Resized:
@@ -295,7 +295,7 @@ void MainGameState::inputProcess()
 			else if (event.mouseButton.button == sf::Mouse::Left)
 			{
 				// If right click menu is visible, then try to select the tile which player's mouse hovers on.
-				if (m_str_gui_map.at(MENU_GUI_STR).get_visible() == true)
+				if (m_str_gui_map.at(MENU_GUI_STR).get_visible())
 				{
 					// Try to get activated message from player mouse clicked Gui Entry object if valid.
 					std::string activated_msg = m_str_gui_map.at(MENU_GUI_STR).

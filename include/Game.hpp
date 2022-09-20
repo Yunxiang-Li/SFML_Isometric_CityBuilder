@@ -39,10 +39,10 @@ class Game
 	void pop_state();
 
 	/**
-	 * Switch from current game state to input one.
+	 * Switch from current game state to input one(not used for now).
 	 * @param state_ptr A std::unique_ptr indicates the input game state.
 	 */
-	void switch_state(std::unique_ptr<GameState> state_ptr);
+	//void switch_state(std::unique_ptr<GameState> state_ptr);
 
 	/**
 	 * Retrieve the top(current) game state as a pointer of GameState object.
@@ -75,7 +75,7 @@ class Game
 	/**
 	 * Load all game required textures.
 	 */
-	void load_game_textures();
+	static void load_game_textures();
 
 	/**
 	 * Create and store all 7 types of tile objects.

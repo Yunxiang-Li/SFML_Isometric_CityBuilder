@@ -11,7 +11,7 @@ Game::Game()
 	m_game_window.setFramerateLimit(FPS);
 
 	// Load all game textures.
-	this->load_game_textures();
+	Game::load_game_textures();
 	// Create and store all 7 types of tiles.
 	this->load_tiles();
 	// Set up game background's sprite object.
@@ -38,12 +38,12 @@ void Game::pop_state()
 	m_state_stack.pop();
 }
 
-void Game::switch_state(std::unique_ptr<GameState> state_ptr)
+/*void Game::switch_state(std::unique_ptr<GameState> state_ptr)
 {
 	if (!(m_state_stack.empty()))
 		this->pop_state();
 	this->push_state(std::move(state_ptr));
-}
+}*/
 
 GameState* Game::peek_state() const
 {
@@ -160,9 +160,9 @@ void Game::load_Gui_styles()
 {
 	// Set up button and text's Gui styles.
 
-	m_str_GuiStyle_ptr_map[BUTTON_NAME] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map.at(FONT_NAME),
-		BUTTON_OUTLINE_SIZE,BUTTON_BACKGROUND_COLOR, BUTTON_OUTLINE_COLOR,
-		sf::Color::Black, BUTTON_BACKGROUND_HIGHLIGHT_COLOR,
+	m_str_GuiStyle_ptr_map[BUTTON_NAME] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map
+		.at(FONT_NAME),BUTTON_OUTLINE_SIZE,BUTTON_BACKGROUND_COLOR,
+		BUTTON_OUTLINE_COLOR,sf::Color::Black,BUTTON_BACKGROUND_HIGHLIGHT_COLOR,
 			BUTTON_OUTLINE_HIGHLIGHT_COLOR,sf::Color::Black));
 	m_str_GuiStyle_ptr_map[TEXT_NAME] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map.at(FONT_NAME),
 		TEXT_OUTLINE_SIZE,TEXT_BACKGROUND_COLOR, sf::Color::Black,

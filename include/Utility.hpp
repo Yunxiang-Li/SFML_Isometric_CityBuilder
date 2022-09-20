@@ -124,10 +124,6 @@ constexpr int TOP_RIGHT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR(8);
 constexpr int TOP_LEFT_TOP_RIGHT_BOTTOM_RIGHT_DIR(9);
 constexpr int TOP_LEFT_BOTTOM_LEFT_BOTTOM_RIGHT_DIR(10);
 
-// Store game map's dimension.
-constexpr unsigned int GAME_MAP_WIDTH(64);
-constexpr unsigned int GAME_MAP_HEIGHT(64);
-
 // Store zoom factor according to mouse scroll.
 constexpr float DOWNWARD_SCROLL_FACTOR(2.f);
 constexpr float UPWARD_SCROLL_FACTOR(0.5f);

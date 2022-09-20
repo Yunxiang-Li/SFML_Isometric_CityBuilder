@@ -6,7 +6,7 @@
 MainMenuGameState::MainMenuGameState(std::shared_ptr<Game> game_ptr)
 {
 	// Store the game pointer.
-	this->set_game_ptr(game_ptr);
+	this->set_game_ptr(std::move(game_ptr));
 	// Set game view's size to be same as current window's size.
 	sf::Vector2f main_menu_view_size(sf::Vector2f(this->get_game_ptr()->m_game_window.getSize()));
 	m_view.setSize(main_menu_view_size);
@@ -48,7 +48,7 @@ void MainMenuGameState::update(const float dt)
 
 void MainMenuGameState::inputProcess()
 {
-	sf::Event event;
+	sf::Event event{};
 	// Transfer current mouse position from screen coordinate to world coordinate.
 	sf::Vector2f mouse_pos = this->get_game_ptr()->m_game_window.mapPixelToCoords(sf::Mouse::getPosition
 		(this->get_game_ptr()->m_game_window), m_view);
@@ -63,7 +63,7 @@ void MainMenuGameState::inputProcess()
 		case sf::Event::Closed:
 		{
 			this->get_game_ptr()->m_game_window.close();
-			break;;
+			break;
 		}
 		// If user resize the window size.
 		case sf::Event::Resized:

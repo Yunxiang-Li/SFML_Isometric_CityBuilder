@@ -31,8 +31,8 @@ class Tile
 	Tile(const unsigned int tile_half_width_pixel, const unsigned int tile_height_num, sf::Texture& texture,
 		std::vector<Animation> animation_vec, const TileTypeEnum& tileType, const unsigned int cost,
 		const unsigned int curr_level_population_limit, const unsigned int max_level) : m_tileType(tileType),
-																						m_cost(cost), m_population_limit_per_level(curr_level_population_limit), m_max_level(max_level),
-																						m_animationHandler_ptr(std::make_shared<AnimationHandler>())
+		m_cost(cost), m_population_limit_per_level(curr_level_population_limit), m_max_level(max_level),
+		m_animationHandler_ptr(std::make_shared<AnimationHandler>())
 		{
 			/* Since one texture contains at most 4 tiles, we need to set up the top left point of the current
 			 * tile sprite according to the whole texture.*/

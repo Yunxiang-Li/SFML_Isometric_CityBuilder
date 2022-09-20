@@ -26,7 +26,7 @@ class MainGameState : public GameState
 	 * Constructor of MainGameState class.
 	 * @param game_ptr A std::unique_ptr<Game> object indicates the pointer of game object.
 	 */
-	explicit MainGameState(std::shared_ptr<Game> game_ptr);
+	explicit MainGameState(const std::shared_ptr<Game>& game_ptr);
 
 	/**
 	 * Virtual destructor.
@@ -37,13 +37,13 @@ class MainGameState : public GameState
 	* Render the related scene according to delta time.
 	* @param dt A const float value indicates the delta time.
 	*/
-	virtual void render(const float dt) override;
+	virtual void render(float dt) override;
 
 	/**
 	 * Update the related scene according to delta time.
 	 * @param dt A const float value indicates the delta time.
 	 */
-	virtual void update(const float dt) override;
+	virtual void update(float dt) override;
 
 	/**
 	 * Handle user's input in the related scene.

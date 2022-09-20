@@ -36,13 +36,13 @@ class AnimationHandler
 	 * Update the current frame of animation. dt is the elapsed time since last chanceLevelUp function call.
 	 * @param dt A const float indicates the elapsed time since last chanceLevelUp call
 	 */
-	void update(const float dt);
+	void update(float dt);
 
 	/**
 	 * Change animation from current one with specified one.
-	 * @param anim_idx A const unsigned integer indicates the specified animation's index.
+	 * @param anim_idx A unsigned integer indicates the specified animation's index.
 	 */
-	void changeAnim(const unsigned int anim_idx);
+	void changeAnim(unsigned int anim_idx);
 
 	/**
 	 * Get and return m_each_frame_texture_rect member.

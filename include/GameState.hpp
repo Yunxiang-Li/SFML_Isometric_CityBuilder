@@ -12,15 +12,15 @@ class GameState
  public:
 	/**
 	 * Render the related scene according to delta time.
-	 * @param dt A const float value indicates the delta time.
+	 * @param dt A float value indicates the delta time.
 	 */
-	virtual void render(const float dt) = 0;
+	virtual void render(float dt) = 0;
 
 	/**
 	 * Update the related scene according to delta time.
-	 * @param dt A const float value indicates the delta time.
+	 * @param dt A float value indicates the delta time.
 	 */
-	virtual void update(const float dt) = 0;
+	virtual void update(float dt) = 0;
 
 	/**
 	 * Handle user's input in the related scene.
@@ -49,7 +49,7 @@ class GameState
 	 */
 	inline void set_game_ptr(std::shared_ptr<Game> game_ptr)
 	{
-		m_game_ptr = game_ptr;
+		m_game_ptr = std::move(game_ptr);
 	};
 
  private:

@@ -60,7 +60,7 @@ class City
 	 * move goods around tiles and so on.
 	 * @param dt A const float indicates the elapsed time in seconds since last update call.
 	 */
-	void update(const float dt);
+	void update(float dt);
 
 	/**
 	 * Replace mouse selected tiles(if valid) with specified tile type.
@@ -178,7 +178,7 @@ class City
 	 * value is zero.
 	 * @return A double indicates this Tile object's updated population.
 	 */
-	double distributeResidents(double& residents_ref, Tile& tile, double rate = 0.0);
+	static double distributeResidents(double& residents_ref, Tile& tile, double rate = 0.0);
 };
 
 #endif //CITY_HPP

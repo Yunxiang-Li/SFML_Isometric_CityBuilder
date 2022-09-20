@@ -19,11 +19,11 @@
 	 * @param text_padding A unsigned integer indicates the padding size of Gui object's text contents.
 	 * @param is_horizontal A bool indicates if the Gui object is displayed horizontally(if not, then vertically).
 	 * @param gui_style A reference of const GuiStyle object indicates the current Gui object's style.
-	 * @param entries_text_msg_vec A vector of pair of string, first element indicates the related Gui Entry object's
-	 * text content, second element indicates this Gui Entry object's activated message.
+	 * @param entries_text_msg_vec A const vector of pair of string, first element indicates the related Gui Entry
+	 * object's text content, second element indicates this Gui Entry object's activated message.
 	 */
 	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, const GuiStyle& gui_style,
-		std::vector<std::pair<std::string, std::string>> entries_text_msg_vec) : m_is_visible(false),
+		const std::vector<std::pair<std::string, std::string>>& entries_text_msg_vec) : m_is_visible(false),
 																				 m_is_horizontal(is_horizontal),
 		m_gui_style_ptr(std::make_shared<GuiStyle>(gui_style)), m_entry_shape_dimension(entry_shape_dimension),
 																				 m_text_padding(text_padding)
@@ -86,7 +86,7 @@
 	 * @param render_target A reference of sf::RenderTarget object indicates render target to draw to.
 	 * @param render_states A sf::RenderStates object indicates current render states.
 	 */
-	virtual void draw(sf::RenderTarget& render_target, sf::RenderStates render_states) const override;
+	void draw(sf::RenderTarget& render_target, sf::RenderStates render_states) const override;
 
 	/**
 	 * Update each GuiEntry object and set visibility to true.
@@ -100,18 +100,18 @@
 
 	/**
 	 * Highlight specified GuiEntry object.
-	 * @param entry_idx A const integer indicates the index of specified GuiEntry object. -1 means not highlighted.
+	 * @param entry_idx An integer indicates the index of specified GuiEntry object. -1 means not highlighted.
 	 */
-	void highlight_entry(const int entry_idx);
+	void highlight_entry(int entry_idx);
 
 	/**
 	 * Return the activated message of specified GuiEntry object if exist. Otherwise, return "NULL".
-	 * @param entry_idx A const integer indicates the index of specified GuiEntry object if exist. -1 means such
+	 * @param entry_idx An integer indicates the index of specified GuiEntry object if exist. -1 means such
 	 * GuiEntry object does not exist.
 	 * @return A std::string indicates the message content of specified GuiEntry object if exist. Otherwise, return
 	 * "NULL".
 	 */
-	std::string get_entry_msg(const int entry_idx) const;
+	std::string get_entry_msg(int entry_idx) const;
 
 	/**
 	 * Return the activated message of specified GuiEntry object if exist. Otherwise, return "NULL".

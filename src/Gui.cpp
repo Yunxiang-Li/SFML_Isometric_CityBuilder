@@ -1,9 +1,8 @@
 #include "Gui.hpp"
-#include <assert.h>
 
 sf::Vector2f Gui::get_gui_size() const
 {
-	return sf::Vector2f(m_entry_shape_dimension.x, m_entry_shape_dimension.y * m_Gui_entry_vec.size());
+	return {m_entry_shape_dimension.x, m_entry_shape_dimension.y * m_Gui_entry_vec.size()};
 }
 
 int Gui::get_gui_entry_idx(const sf::Vector2f& mouse_pos) const
@@ -11,7 +10,7 @@ int Gui::get_gui_entry_idx(const sf::Vector2f& mouse_pos) const
 	// If no GuiEntry objects exist, or the GUI is not visible, then return -1.
 	if (m_Gui_entry_vec.empty())
 		return -1;
-	if (m_is_visible == false)
+	if (!m_is_visible)
 		return -1;
 
 	// Traverse each GuiEntry object.
@@ -70,7 +69,7 @@ void Gui::set_each_gui_entry_dimension(const sf::Vector2f& dimension)
 void Gui::draw(sf::RenderTarget& render_target, sf::RenderStates render_states) const
 {
 	// Check if GUI is visible or not.
-	if (m_is_visible == false)
+	if (!m_is_visible)
 		return;
 
 	// Draw each GuiEntry object.
