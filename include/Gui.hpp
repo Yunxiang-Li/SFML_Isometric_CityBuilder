@@ -20,12 +20,12 @@
 	 * @param is_horizontal A bool indicates if the Gui object is displayed horizontally(if not, then vertically).
 	 * @param gui_style A reference of const GuiStyle object indicates the current Gui object's style.
 	 * @param entries_text_msg_vec A vector of pair of string, first element indicates the related Gui Entry object's
-	 * name, second element indicates this Gui Entry object's activated message.
+	 * text content, second element indicates this Gui Entry object's activated message.
 	 */
 	Gui(sf::Vector2f entry_shape_dimension, unsigned int text_padding, bool is_horizontal, const GuiStyle& gui_style,
 		std::vector<std::pair<std::string, std::string>> entries_text_msg_vec) : m_is_visible(false),
 																				 m_is_horizontal(is_horizontal),
-		m_gui_style_ptr(std::make_unique<GuiStyle>(gui_style)), m_entry_shape_dimension(entry_shape_dimension),
+		m_gui_style_ptr(std::make_shared<GuiStyle>(gui_style)), m_entry_shape_dimension(entry_shape_dimension),
 																				 m_text_padding(text_padding)
 	{
 		// Set up Gui entry shape's properties.
@@ -100,9 +100,9 @@
 
 	/**
 	 * Highlight specified GuiEntry object.
-	 * @param entry_idx A const unsigned integer indicates the index of specified GuiEntry object.
+	 * @param entry_idx A const integer indicates the index of specified GuiEntry object. -1 means not highlighted.
 	 */
-	void highlight_entry(const unsigned int entry_idx);
+	void highlight_entry(const int entry_idx);
 
 	/**
 	 * Return the activated message of specified GuiEntry object if exist. Otherwise, return "NULL".
@@ -121,16 +121,27 @@
 	 */
 	std::string get_mouse_pos_entry_msg(const sf::Vector2f& mouse_pos) const;
 
+	/**
+	 * Retrieve the visible status of the Gui object.
+	 * @return A bool indicates whether current Gui object is visible or not.
+	 */
+	bool get_visible() const;
+
+	/**
+	 * Retrieve the size of current Gui object's Gui entries.
+	 * @return A unsigned integer indicates the number of related Gui entries.
+	 */
+	unsigned int get_entry_size() const;
+
   private:
 	// A vector of multiple GuiEntry objects.
 	std::vector<GuiEntry> m_Gui_entry_vec;
-
 	// A bool indicates if the Gui should be visible or not.
 	bool m_is_visible{false};
 	// Indicates if the menu entry is horizontal or not. If not, then vertically.
 	bool m_is_horizontal{true};
   	// A std::unique_ptr<GuiStyle> object indicates the pointer of Gui's style(size, color, font).
-  	std::unique_ptr<GuiStyle> m_gui_style_ptr;
+  	std::shared_ptr<GuiStyle> m_gui_style_ptr;
 	// Indicates the Gui entry shape's width and height(dimension).
 	sf::Vector2f m_entry_shape_dimension;
 	// Margin that surrounds the text to stop it from overlapping the edges in pixels.

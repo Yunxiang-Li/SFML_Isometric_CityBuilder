@@ -44,8 +44,8 @@ class GameState
 	};
 
 	/**
-	 *
-	 * @param game_ptr
+	 * Set the game pointer.
+	 * @param game_ptr A std::shared_ptr<Game> indicates the new game pointer to be set.
 	 */
 	inline void set_game_ptr(std::shared_ptr<Game> game_ptr)
 	{

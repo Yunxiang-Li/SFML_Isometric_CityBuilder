@@ -1,0 +1,14 @@
+city_width=64
+city_height=64
+m_day=0
+m_homeless_num=50
+m_unemployment_num=25
+m_city_population=50
+m_employable_num=25
+m_birth_rate_per_day=0.003
+m_death_rate_per_day=0.0025
+m_residential_tax_rate=0.05
+m_commercial_tax_rate=0.05
+m_industrial_tax_rate=0.05
+m_fund=30000
+m_curr_month_earnings=0

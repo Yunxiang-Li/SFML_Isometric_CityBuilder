@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include "Map.hpp"
 #include "Utility.hpp"
 
@@ -11,62 +12,111 @@ Map::Map(const std::string& file_name, unsigned int width, unsigned int height,
 void Map::load(const std::string& file_name, unsigned int width, unsigned int height,
 	std::unordered_map<std::string, Tile>& str_tile_map)
 {
-	// Open the store eternal file in binary form to read.
-	std::ifstream input_file(file_name, std::ios::binary);
-
 	// Store the dimension of the map.
 	m_width = width;
 	m_height = height;
 
-	for (int pos = 0; pos < (m_width * m_height); ++pos)
+	// Open the store eternal file in binary form to read.
+	std::ifstream input_file(file_name, std::ios::binary);
+	// Check if its first time we create the game map or something wrong with the game map.
+	if(input_file.fail())
 	{
-		// Set each tile object's initial production to be 255.
-		m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
-		// Initialize each selected tile's condition to zero(not selected).
-		m_selected_tiles_condition_vec.emplace_back(TILE_NOT_SELECTED_FLAG);
-
-		// Read and store each tile object's tile type.
-		TileTypeEnum tileType;
-		input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileTypeEnum));
-
-		// Set up each tile object's texture according to its tile type.
-		switch (tileType)
+		for (int pos = 0; pos < (m_width * m_height); ++pos)
 		{
-		case TileTypeEnum::VOID:
-		case TileTypeEnum::FOREST:
-			m_tiles_vec.emplace_back(str_tile_map.at(FOREST_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::WATER:
-			m_tiles_vec.emplace_back(str_tile_map.at(WATER_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::RESIDENTIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at(RESIDENTIAL_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::COMMERCIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at(COMMERCIAL_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::INDUSTRIAL:
-			m_tiles_vec.emplace_back(str_tile_map.at(INDUSTRIAL_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::ROAD:
-			m_tiles_vec.emplace_back(str_tile_map.at(ROAD_TILE_TEXTURE_NAME));
-			break;
-		case TileTypeEnum::GRASS:
-			m_tiles_vec.emplace_back(str_tile_map.at(RESIDENTIAL_TILE_TEXTURE_NAME));
-			break;
-		default:
-			break;
+			// Set each tile object's initial production to be 255.
+			m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
+			// Initialize each selected tile's condition to zero(not selected).
+			m_selected_tiles_condition_vec.emplace_back(TILE_NOT_SELECTED_FLAG);
+
+			switch (rand() % 10)
+			{
+			case 0:
+			case 1:
+				m_tiles_vec.emplace_back(str_tile_map.at(FOREST_TILE_TEXTURE_NAME));
+				// Set up each tile object's current level, region id array, current population and total production.
+				m_tiles_vec[m_tiles_vec.size() - 1].m_level = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_region_arr[0] = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_population = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_total_production = 0;
+				break;
+			case 2:
+			case 3:
+				m_tiles_vec.emplace_back(str_tile_map.at(WATER_TILE_TEXTURE_NAME));
+				// Set up each tile object's current level, region id array, current population and total production.
+				m_tiles_vec[m_tiles_vec.size() - 1].m_level = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_region_arr[0] = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_population = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_total_production = 0;
+				break;
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				m_tiles_vec.emplace_back(str_tile_map.at(GRASS_TILE_TEXTURE_NAME));
+				// Set up each tile object's current level, region id array, current population and total production.
+				m_tiles_vec[m_tiles_vec.size() - 1].m_level = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_region_arr[0] = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_population = 0;
+				m_tiles_vec[m_tiles_vec.size() - 1].m_total_production = 0;
+				break;
+			default:
+				break;
+			}
 		}
-
-		// Set up each tile object's current level, region id array, current population and total production.
-		Tile& curr_tile_ref = m_tiles_vec.back();
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_level)), sizeof(unsigned int));
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_arr)), sizeof(unsigned int) * 1);
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_population)), sizeof(double));
-		input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_total_production)), sizeof(float));
-
-		input_file.close();
 	}
+	else
+	{
+		for (int pos = 0; pos < (m_width * m_height); ++pos)
+		{
+			// Set each tile object's initial production to be 255.
+			m_resource_vec.emplace_back(EACH_TILE_PRODUCTION);
+			// Initialize each selected tile's condition to zero(not selected).
+			m_selected_tiles_condition_vec.emplace_back(TILE_NOT_SELECTED_FLAG);
+
+			// Read and store each tile object's tile type.
+			TileTypeEnum tileType;
+			input_file.read(reinterpret_cast<char*>(&tileType), sizeof(TileTypeEnum));
+
+			// Set up each tile object's texture according to its tile type.
+			switch (tileType)
+			{
+			case TileTypeEnum::VOID:
+			case TileTypeEnum::FOREST:
+				m_tiles_vec.emplace_back(str_tile_map.at(FOREST_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::WATER:
+				m_tiles_vec.emplace_back(str_tile_map.at(WATER_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::RESIDENTIAL:
+				m_tiles_vec.emplace_back(str_tile_map.at(RESIDENTIAL_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::COMMERCIAL:
+				m_tiles_vec.emplace_back(str_tile_map.at(COMMERCIAL_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::INDUSTRIAL:
+				m_tiles_vec.emplace_back(str_tile_map.at(INDUSTRIAL_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::ROAD:
+				m_tiles_vec.emplace_back(str_tile_map.at(ROAD_TILE_TEXTURE_NAME));
+				break;
+			case TileTypeEnum::GRASS:
+				m_tiles_vec.emplace_back(str_tile_map.at(GRASS_TILE_TEXTURE_NAME));
+				break;
+			default:
+				break;
+			}
+
+			// Set up each tile object's current level, region id array, current population and total production.
+			Tile& curr_tile_ref = m_tiles_vec.back();
+			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_level)), sizeof(unsigned int));
+			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_region_arr)), sizeof(unsigned int) * 1);
+			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_population)), sizeof(double));
+			input_file.read(reinterpret_cast<char*>(&(curr_tile_ref.m_total_production)), sizeof(float));
+		}
+	}
+	input_file.close();
 }
 
 void Map::save(const std::string& file_name)
@@ -320,7 +370,7 @@ void Map::select(sf::Vector2i& start_pos, sf::Vector2i& end_pos, const std::vect
 void Map::deselect_tiles()
 {
 	// De-select each tile and reset the selected tiles' number to zero.
-	for (auto val : m_selected_tiles_condition_vec)
+	for (auto& val : m_selected_tiles_condition_vec)
 		val = 0;
 	m_selected_tiles_num = 0;
 }
@@ -354,6 +404,10 @@ Tile Map::get_tile(int idx) const
 {
 	return m_tiles_vec[idx];
 }
+Tile& Map::get_tile_ref(int idx)
+{
+	return m_tiles_vec[idx];
+}
 
 void Map::set_tile(int idx, const Tile& new_tile)
 {
@@ -363,4 +417,24 @@ void Map::set_tile(int idx, const Tile& new_tile)
 unsigned int Map::get_tiles_amount() const
 {
 	return m_tiles_vec.size();
+}
+
+unsigned int Map::get_tile_resource(int idx) const
+{
+	return m_resource_vec[idx];
+}
+
+void Map::decrement_tile_resource(int idx)
+{
+	--m_resource_vec[idx];
+}
+
+std::vector<Tile>& Map::get_tiles_vec_ref()
+{
+	return m_tiles_vec;
+}
+
+unsigned int Map::get_selected_tiles_num() const
+{
+	return m_selected_tiles_num;
 }

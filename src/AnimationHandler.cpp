@@ -8,7 +8,7 @@ void AnimationHandler::addAnim(Animation& anim_ref)
 void AnimationHandler::update(const float dt)
 {
 	// Check if current animation index is valid or not.
-	if (m_curr_animation_idx < 0 || m_curr_animation_idx > m_animations_vec_ptr.size())
+	if (m_curr_animation_idx < 0 || m_curr_animation_idx >= m_animations_vec_ptr.size())
 		return;
 	// Store current animation's duration per frame.
 	float each_frame_duration = m_animations_vec_ptr[m_curr_animation_idx].getDuration();
@@ -25,7 +25,7 @@ void AnimationHandler::update(const float dt)
 		sf::IntRect temp_rect(m_each_frame_size_rect);
 		// Update temp rect's left and top to be next frame's real texture rect.
 		temp_rect.left = temp_rect.width * next_frame_idx;
-		temp_rect.top = temp_rect.height * next_frame_idx;
+		temp_rect.top = temp_rect.height * m_curr_animation_idx;
 		// Set up next frame's texture rect.
 		m_each_frame_texture_rect = temp_rect;
 	}

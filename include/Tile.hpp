@@ -10,12 +10,7 @@
  */
 class Tile
 {
-	/**
-	 * A friend function to transform input TileTypeEnum into related string.
-	 * @param tile_type A TileTypeEnum object indicates the input TileTypeEnum.
-	 * @return A std::string indicates the related string.
-	 */
-	friend std::string tileTypeToStr(TileTypeEnum tile_type);
+
  public:
 	/**
 	 *	Default constructor.
@@ -73,9 +68,9 @@ class Tile
 
 	/**
 	 * Return the cost of placing current tile object in string form.
-	 * @return A std::string indicates the string form of the cost.
+	 * @return A unsigned integer indicates the cost.
 	 */
-	std::string getCost() const;
+	unsigned int getCost() const;
 
 	/**
 	 * Set current tile object's level.
@@ -88,6 +83,18 @@ class Tile
 	 * @return A unsigned integer indicates Tile object's maximum population per level.
 	 */
 	unsigned int get_population_limit_per_level() const;
+
+	/**
+	 * Set new production_per_worker_per_day value.
+	 * @param production_per_day A float indicates hte new production_per_worker_per_day value.
+	 */
+	void set_production_per_day(float production_per_day);
+
+	/**
+	 * Retrieve the tile's production per worker per day.
+	 * @return A float indicates the tile's production per worker per day.
+	 */
+	float get_production_per_day() const;
 
 	// Current Tile object's tile type.
 	TileTypeEnum m_tileType{};
@@ -113,7 +120,7 @@ class Tile
 	// Maximum level of current Tile object.
 	unsigned int m_max_level{0};
 	// Current tile's overall production per work and per day.
-	float m_production_per_worker_per_day{0.f};
+	float m_production_per_day{ 0.f};
 	// An AnimationHandler object
 	std::shared_ptr<AnimationHandler> m_animationHandler_ptr;
 };

@@ -61,7 +61,7 @@ constexpr unsigned int ROAD_HALF_TILE_WIDTH_NUM(1);
 // Store all seven types of tiles' cost.
 constexpr unsigned int GRASS_TILE_COST(50);
 constexpr unsigned int FOREST_TILE_COST(100);
-constexpr unsigned int WATER_TILE_COST(0);
+constexpr unsigned int WATER_TILE_COST(50);
 constexpr unsigned int RESIDENTIAL_TILE_COST(300);
 constexpr unsigned int COMMERCIAL_TILE_COST(300);
 constexpr unsigned int INDUSTRIAL_TILE_COST(300);
@@ -80,9 +80,9 @@ constexpr unsigned int ROAD_CURR_LEVEL_POPULATION_LIMIT(0);
 constexpr unsigned int GRASS_TILE_MAX_LEVEL(1);
 constexpr unsigned int FOREST_TILE_MAX_LEVEL(1);
 constexpr unsigned int WATER_TILE_MAX_LEVEL(1);
-constexpr unsigned int RESIDENTIAL_TILE_MAX_LEVEL(6);
-constexpr unsigned int COMMERCIAL_TILE_MAX_LEVEL(4);
-constexpr unsigned int INDUSTRIAL_TILE_MAX_LEVEL(4);
+constexpr unsigned int RESIDENTIAL_TILE_MAX_LEVEL(5);
+constexpr unsigned int COMMERCIAL_TILE_MAX_LEVEL(3);
+constexpr unsigned int INDUSTRIAL_TILE_MAX_LEVEL(3);
 constexpr unsigned int ROAD_TILE_MAX_LEVEL(1);
 
 // Store water tile's animation properties.
@@ -152,6 +152,35 @@ const std::string BUTTON_GUI_STYLE_NAME("button");
 const std::string LOAD_GAME_GUI_ENTRY_NAME("Load Game");
 const std::string LOAD_GAME_GUI_ENTRY_MSG("message:load_game");
 
+// Store each Tile object's related GuiEntry object's name and activated message.
+const std::string GRASS_GUI_ENTRY_NAME("Grass $" + std::to_string(GRASS_TILE_COST));
+const std::string GRASS_GUI_ENTRY_MSG(GRASS_TILE_TEXTURE_NAME);
+const std::string WATER_GUI_ENTRY_NAME("Water $" + std::to_string(WATER_TILE_COST));
+const std::string WATER_GUI_ENTRY_MSG(WATER_TILE_TEXTURE_NAME);
+const std::string FOREST_GUI_ENTRY_NAME("Forest $" + std::to_string(FOREST_TILE_COST));
+const std::string FOREST_GUI_ENTRY_MSG(FOREST_TILE_TEXTURE_NAME);
+const std::string RESIDENTIAL_GUI_ENTRY_NAME("Residential Zone $" + std::to_string(RESIDENTIAL_TILE_COST));
+const std::string RESIDENTIAL_GUI_ENTRY_MSG(RESIDENTIAL_TILE_TEXTURE_NAME);
+const std::string COMMERCIAL_GUI_ENTRY_NAME("Commercial Zone $" + std::to_string(COMMERCIAL_TILE_COST));
+const std::string COMMERCIAL_GUI_ENTRY_MSG(COMMERCIAL_TILE_TEXTURE_NAME);
+const std::string INDUSTRIAL_GUI_ENTRY_NAME("Industrial Zone $" + std::to_string(INDUSTRIAL_TILE_COST));
+const std::string INDUSTRIAL_GUI_ENTRY_MSG(INDUSTRIAL_TILE_TEXTURE_NAME);
+const std::string ROAD_GUI_ENTRY_NAME("Road $" + std::to_string(ROAD_TILE_COST));
+const std::string ROAD_GUI_ENTRY_MSG(ROAD_TILE_TEXTURE_NAME);
+
+// Store information bar Gui object's all Gui entries' names and related activated messages.
+const std::string TIME_GUI_ENTRY_STR("time");
+const std::string TIME_GUI_ENTRY_MSG("time");
+const std::string FUND_GUI_ENTRY_STR("funds");
+const std::string FUND_GUI_ENTRY_MSG("funds");
+const std::string POPULATION_GUI_ENTRY_STR("population");
+const std::string POPULATION_GUI_ENTRY_MSG("population");
+const std::string EMPLOYMENT_GUI_ENTRY_STR("employment");
+const std::string EMPLOYMENT_GUI_ENTRY_MSG("employment");
+const std::string CURR_TILE_GUI_ENTRY_STR("current tile");
+const std::string CURR_TILE_GUI_ENTRY_MSG("tile");
+
+
 // Store GUI object's name.
 const std::string GUI_NAME("Load Game");
 
@@ -161,6 +190,8 @@ constexpr unsigned int LEVEL_BASE_NUM(1e2);
 
 // Store game map's binary file's path.
 const std::string MAP_BINARY_FILE_PATH("../resources/binary/city_map.dat");
+// Store the city's name.
+const std::string CITY_NAME_STR("../resources/binary/city_cfg.dat");
 
 // Store the Tile object's selected color.
 const sf::Color TILE_SELECTED_COLOR(sf::Color (0x7d, 0x7d, 0x7d));
@@ -188,24 +219,72 @@ constexpr double CITY_RESIDENTIAL_TAX_RATE(0.05);
 constexpr double CITY_COMMERCIAL_TAX_RATE(0.05);
 constexpr double CITY_INDUSTRIAL_TAX_RATE(0.05);
 
-// Store city and map files' postfix.
-const std::string CITY_FILE_POSTFIX("_cfg.dat");
-const std::string MAP_FILE_POSTFIX("_map.dat");
-
 // Store all City class's property names' strings.
 const std::string CITY_WIDTH_STR("city_width");
 const std::string CITY_HEIGHT_STR("city_height");
 const std::string CITY_DAY_STR("m_day");
 const std::string CITY_HOMELESS_NUM_STR("m_homeless_num");
 const std::string CITY_UNEMPLOYMENT_NUM_STR("m_unemployment_num");
-const std::string CITY_IN_HOUSE_POPULATION_STR("m_in_house_population");
-const std::string CITY_EMPLOYMENT_NUM_STR("m_employment_num");
+const std::string CITY_POPULATION_STR("m_city_population");
+const std::string CITY_EMPLOYABLE_STR("m_employable_num");
 const std::string CITY_BIRTH_RATE_PER_DAY_STR("m_birth_rate_per_day");
 const std::string CITY_DEATH_RATE_PER_DAY_STR("m_death_rate_per_day");
 const std::string CITY_RESIDENTIAL_TAX_RATE_STR("m_residential_tax_rate");
 const std::string CITY_COMMERCIAL_TAX_RATE_STR("m_commercial_tax_rate");
 const std::string CITY_INDUSTRIAL_TAX_RATE_STR("m_industrial_tax_rate");
 const std::string CITY_FUND_STR("m_fund");
-const std::string CITY_LAST_MONTH_EARNINGS_STR("m_last_month_earnings");
+const std::string CITY_CURR_MONTH_EARNINGS_STR("m_curr_month_earnings");
+
+// Store each month's days' amount(assume each month has exactly 30 days).
+constexpr unsigned int DAYS_NUM_PER_MONTH(30);
+
+// Store a base number for random number generation inside City::update function.
+constexpr unsigned int CITY_RANDOM_BASE(100);
+// Store a factor for tax rate comparison inside City::update function.
+constexpr unsigned int TAX_RATE_FACTOR(15);
+
+// Store a factor for per production's industrial revenue.
+constexpr unsigned int INDUSTRIAL_REVENUE_PER_PRODUCTION_FACTOR(100);
+
+// Store a factor for per production's residential revenue.
+constexpr unsigned int RESIDENTIAL_REVENUE_PER_PRODUCTION_FACTOR(100);
+
+// Store a base number for random number generation for residential tile's revenue calculation.
+constexpr unsigned int RESIDENTIAL_RANDOM_BASE(20);
+
+// Store the factor used to count city's current month's residential earnings.
+constexpr unsigned int RESIDENTIAL_EARNING_FACTOR(15);
+
+// Store the name of menu Gui object.
+const std::string MENU_GUI_STR("rightClickMenu");
+
+// Store the dimension of menu Gui object's entry shape.
+constexpr unsigned int MENU_GUI_ENTRY_SHAPE_WIDTH(196);
+constexpr unsigned int MENU_GUI_ENTRY_SHAPE_HEIGHT(16);
+
+// Store menu Gui object's text padding.
+constexpr unsigned int MENU_GUI_TEXT_PADDING(2);
+
+// Store the name of select tile cost text Gui object.
+const std::string SELECT_TILE_COST_TEXT_GUI_STR("selectCostText");
+
+// Store the dimension of select tile cost text Gui object's entry shape.
+constexpr unsigned int SELECT_TILE_COST_TEXT_GUI_ENTRY_SHAPE_WIDTH(196);
+constexpr unsigned int SELECT_TILE_COST_TEXT_GUI_ENTRY_SHAPE_HEIGHT(16);
+
+// Store the display offset of select tile cost text Gui object.
+constexpr unsigned int SELECT_TILE_COST_TEXT_GUI_X_OFFSET(16);
+constexpr unsigned int SELECT_TILE_COST_TEXT_GUI_Y_OFFSET(-16);
+
+// Store the name of information bar Gui object.
+const std::string INFO_BAR_GUI_STR("infoBar");
+
+// Store the dimension of information bar Gui object's entry shape.
+constexpr unsigned int INFO_BAR_GUI_ENTRY_SHAPE_WIDTH(GAME_WINDOW_WIDTH/5);
+constexpr unsigned int INFO_BAR_GUI_ENTRY_SHAPE_HEIGHT(16);
+
+// Store Info bar Gui object's text padding.
+constexpr unsigned int INFO_BAR_GUI_TEXT_PADDING(2);
 
 #endif //UTILITY_HPP
+

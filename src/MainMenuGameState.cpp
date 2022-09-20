@@ -129,6 +129,7 @@ void MainMenuGameState::inputProcess()
 void MainMenuGameState::loadGame()
 {
 	// Create a MainGameState object and push it into the state stack.
+
 	MainGameState main_menu_game_state(this->get_game_ptr());
 	this->get_game_ptr()->push_state(std::make_unique<MainGameState>(main_menu_game_state));
 }

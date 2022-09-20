@@ -3,6 +3,8 @@
 // Main entrance of the game.
 int main()
 {
+	// Initialize random number generator.
+	srand (time(nullptr));
 	// Create the game
 	Game game;
 	std::shared_ptr<Game> game_ptr(&game);

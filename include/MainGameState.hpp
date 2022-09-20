@@ -5,12 +5,22 @@
 #include "GameState.hpp"
 #include "GameActionEnum.hpp"
 #include "Map.hpp"
+#include "Gui.hpp"
+
+// Forward declaration.
+class City;
 
 /**
  * This class inherits from the virtual base GameState class and represents the main game state.
  */
 class MainGameState : public GameState
 {
+	/**
+ 	* A friend function to transform input TileTypeEnum into related string.
+ 	* @param tile_type A TileTypeEnum object indicates the input TileTypeEnum.
+ 	* @return A std::string indicates the related string.
+ 	*/
+	friend std::string tileTypeToStr(TileTypeEnum tile_type);
  public:
 	/**
 	 * Constructor of MainGameState class.
@@ -47,8 +57,8 @@ class MainGameState : public GameState
 	sf::View m_gui_view;
 	// Indicates player's current action inside the main game scene.
 	GameActionEnum m_action_state;
-	// A std::shared_ptr<Map> indicates the pointer of main game scene's map.
-	std::shared_ptr<Map>(m_game_map_ptr);
+	// A std::shared_ptr<City> indicates the pointer of game 's city(which contains a Map object inside).
+	std::shared_ptr<City> m_game_city_ptr;
 	/* Keep track of mouse screen position since last camera panning event. When player presses mouse middle button and
 	 * moves mouse at the same time, the world(game view) should also move towards the opposite direction and this
 	 * position should be updated. */
@@ -63,6 +73,9 @@ class MainGameState : public GameState
 
 	// A pointer of player's current selected tile object.
 	std::shared_ptr<Tile> m_curr_selected_tile_ptr;
+
+	// A std::unordered_map where each Gui object's string name is the key, related Gui object is the value.
+	std::unordered_map<std::string, Gui> m_str_gui_map;
 };
 
 #endif //MAINGAMESTATE_HPP

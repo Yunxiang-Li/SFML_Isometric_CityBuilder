@@ -165,7 +165,7 @@ void Game::load_Gui_styles()
 		sf::Color::Black, BUTTON_BACKGROUND_HIGHLIGHT_COLOR,
 			BUTTON_OUTLINE_HIGHLIGHT_COLOR,sf::Color::Black));
 	m_str_GuiStyle_ptr_map[TEXT_NAME] = std::make_shared<GuiStyle>(GuiStyle(m_str_font_ptr_map.at(FONT_NAME),
-		0.f,TEXT_BACKGROUND_COLOR, sf::Color::Black,
+		TEXT_OUTLINE_SIZE,TEXT_BACKGROUND_COLOR, sf::Color::Black,
 		sf::Color::White,TEXT_BACKGROUND_HIGHLIGHT_COLOR,
 		sf::Color::Black,sf::Color::Red));
 }

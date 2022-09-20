@@ -128,6 +128,13 @@ class Map
 	Tile get_tile(int idx) const;
 
 	/**
+ 	* Get specified Tile object's reference.
+ 	* @param idx An integer indicates the index of the tile.
+ 	* @return A reference of specified Tile object.
+ 	*/
+	Tile& get_tile_ref(int idx);
+
+	/**
 	 * Set specified Tile object to be identical with input Tile object.
 	 * @param idx An integer indicates the index of the tile.
 	 * @param new_tile A reference of const Tile object indicates the input Tile object.
@@ -140,6 +147,31 @@ class Map
 	 */
 	unsigned int get_tiles_amount() const;
 
+	/**
+	 * Retrieve the specified Tile object's underground resource.
+	 * @param idx An integer indicates the index of the tile.
+	 * @return A unsigned integer indicates the resource.
+	 */
+	unsigned int get_tile_resource(int idx) const;
+
+	/**
+	 * Decrement related Tile object's resource by one.
+	 * @param idx An integer indicates the index of the tile.
+	 */
+	void decrement_tile_resource(int idx);
+
+	/**
+	 * Retrieve the reference of m_tiles_vec.
+	 * @return A reference of m_tiles_vec.
+	 */
+	std::vector<Tile>& get_tiles_vec_ref();
+
+	/**
+	 * Retrieve the amount of Tile objects that selected by player.
+	 * @return A unsigned integer indicates the amount.
+	 */
+	unsigned int get_selected_tiles_num() const;
+
  private:
 
 	// Dimension of the map.
@@ -147,7 +179,7 @@ class Map
 	unsigned int m_height{0};
 	// Holds all Tile objects to construct the map.
 	std::vector<Tile> m_tiles_vec;
-	// Contains each industrial tile object's limited production.
+	// Contains each tile object's limited production.
 	std::vector<unsigned int> m_resource_vec;
 	// Each tile object has 16 pixels' width(thus half width is 8 pixels) and 8 pixels' height.
 	unsigned int m_tile_half_width{TILE_HALF_WIDTH};
@@ -170,6 +202,8 @@ class Map
 	 */
 	void DFS(const std::vector<TileTypeEnum>& whitelist_vec, sf::Vector2i pos, unsigned int region_idx,
 		unsigned int region_type = 0);
+
+	void generate_river();
 };
 
 #endif //MAP_HPP

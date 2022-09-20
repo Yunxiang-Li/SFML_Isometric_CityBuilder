@@ -3,6 +3,7 @@
 #define CITY_HPP
 
 #include <vector>
+#include <iostream>
 #include "Map.hpp"
 
 // Forward declarations.
@@ -18,10 +19,10 @@ class City
 	 * No parameter constructor of City.
 	 */
 	City() : m_birth_rate_per_day(CITY_BIRTH_RATE_PER_DAY), m_death_rate_per_day(CITY_DEATH_RATE_PER_DAY),
-			 m_proportion_can_work(CITY_PROPORTION_CAN_WORK), m_homeless_num(0), m_in_house_population(m_homeless_num),
-			 m_unemployment_num(0), m_employment_num(m_unemployment_num),
+			 m_proportion_can_work(CITY_PROPORTION_CAN_WORK), m_homeless_num(0), m_city_population(m_homeless_num),
+			 m_unemployment_num(0), m_employable(m_unemployment_num),
 			 m_residential_tax_rate(CITY_RESIDENTIAL_TAX_RATE), m_commercial_tax_rate(CITY_COMMERCIAL_TAX_RATE),
-			 m_industrial_tax_rate(CITY_INDUSTRIAL_TAX_RATE), m_last_month_earnings(0), m_fund(0),
+			 m_industrial_tax_rate(CITY_INDUSTRIAL_TAX_RATE), m_curr_month_earnings(0), m_fund(0),
 			 m_current_day_elapsed_time(0), m_time_per_day(0.f), m_day(0){};
 
 	/**
@@ -34,9 +35,10 @@ class City
 	City(const std::string& city_name_str, unsigned int tile_half_width,
 		std::unordered_map<std::string, Tile>& str_tile_map) : City()
 	{
-		// Set each tile's half width length and load the tile map.
-		m_map.set_tile_half_width(tile_half_width);
 		load(city_name_str, str_tile_map);
+		// Set each tile's half width length and load the tile map.
+		m_map_ptr->set_tile_half_width(tile_half_width);
+
 	};
 
 	/**
@@ -56,25 +58,26 @@ class City
 	/**
 	 * Update the city according to elapsed time. For instance, let people move around, calculate new income,
 	 * move goods around tiles and so on.
-	 * @param dt A float indicates the elapsed time in seconds since last update call.
+	 * @param dt A const float indicates the elapsed time in seconds since last update call.
 	 */
-	void update(float dt);
+	void update(const float dt);
 
 	/**
-	 * Replace the mouse selected tile(if valid) with specified tile.
-	 * @param tile A reference of const Tile indicates the input specified Tile object. Only residential, commercial or industrial tile
+	 * Replace mouse selected tiles(if valid) with specified tile type.
+	 * @param tile A reference of const Tile indicates the input specified Tile object. Only residential, commercial or
+	 * industrial tile
 	 */
 	void bulldoze(const Tile& tile);
 
 	/**
-	 * Generate each Tile object's update order in random inside m_tiles_update_order_vec.
+	 * Generate each Tile object's update order in random inside m_update_order_related_tile_index_vec.
 	 */
 	void shuffleTiles();
 
 	/**
 	 * updates all of the roads to face the correct way. Then creating regions where roads and zones are connected.
 	 */
-	void changeTiles();
+	void updateTiles();
 
 	/**
 	 * Retrieve amount of homeless people.
@@ -84,9 +87,45 @@ class City
 
 	/**
 	 * Retrieve amount of unemployment(employment pool)
-	 * @return
+	 * @return A double indicates unemployment number.
 	 */
 	double getUnemployedNum() const;
+
+	/**
+	 * Retrieve the pointer of game map.
+	 * @return A std::shared_ptr<Map> indicates the pointer of game map.
+	 */
+	std::shared_ptr<Map> get_map_ptr() const;
+
+	/**
+	 * Retrieve the city's current day.
+	 * @return A unsigned integer indicates the current day.
+	 */
+	unsigned int get_day() const;
+
+	/**
+	 * Retrieve the city's current fund.
+	 * @return A double indicates the city's current fund.
+	 */
+	double get_fund() const;
+
+	/**
+	 * Set city's new fund.
+	 * @param new_fund  A double indicates the new fund of the city.
+	 */
+	void set_fund(double new_fund);
+
+	/**
+	 * Retrieve the city's current population(including homeless people).
+	 * @return A double indicates the city's current population.
+	 */
+	double get_population() const;
+
+	/**
+	 * Retrieve the city's current employable people's amount.
+	 * @return A double indicates the city's current employable amount.
+	 */
+	double get_employable() const;
 
  private:
 	/* Proportion of residents who die/give birth each day. Estimate for death rate = 1 / (life expectancy * 360).
@@ -99,19 +138,20 @@ class City
 	// Amount of residents who do not have homes(homeless people who are not inside residential tiles).
 	double m_homeless_num{0};
 	// Indicates all residents who have homes.
-	double m_in_house_population{0};
+	double m_city_population{ 0};
 	// Amount of people who are not employees(not inside industrial/commercial tiles) for now.
 	double m_unemployment_num{0};
-	// Indicates the amount of all employees.
-	double m_employment_num{0};
+	/* Indicates the amount of people that can be employed(inside commercial/industrial tiles) but may be not employed
+	 * for now(propCanWork * population). */
+	double m_employable{0};
 
 	// Store three zones' tax rate.
 	double m_residential_tax_rate{0};
 	double m_commercial_tax_rate{0};
 	double m_industrial_tax_rate{0};
 
-	// Earnings (from tax) from the previous month, will not be added to fund until next month.
-	double m_last_month_earnings{0};
+	// Earnings (from tax) from the current month, will not be added to fund until next month.
+	double m_curr_month_earnings{ 0};
 	// City's funds for building new tiles.
 	double m_fund{0};
 	// Indicates the seconds elapsed within current day.
@@ -121,11 +161,12 @@ class City
 	// Indicates current day is the ith day of the month. We assume that each month has at most 30 days.
 	unsigned int m_day{0};
 
-	// Contains update orders of each Tile object within the game map.
-	std::vector<int> m_tiles_update_order_vec;
+	/* Store Tile objects' indexes in ascending update order. Index specifies the order and value indicates the related
+	 * Tile object's index. */
+	std::vector<int> m_update_order_related_tile_index_vec;
 
-	// A Map object indicates the game map.
-	Map m_map;
+	// A std::shared_ptr<Map> object indicates the pointer of game map.
+	std::shared_ptr<Map> m_map_ptr;
 
 	/**
 	 * Try to move specified Tile's 4 people into related regions. Then adjust this Tile's population according to

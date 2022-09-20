@@ -27,48 +27,12 @@ void Tile::chanceLevelUp()
 		 * Result will be 25 for level 3 thus 2.5% chance to level up.*/
 		if((rand() % int(RAND_BASE_NUM)) < (LEVEL_BASE_NUM / (m_level + 1)))
 			++m_level;
-
 	}
 }
 
-std::string Tile::getCost() const
+unsigned int Tile::getCost() const
 {
-	return std::to_string(m_cost);
-}
-
-std::string tileTypeToStr(TileTypeEnum tile_type)
-{
-	// A string store the result.
-	std::string res_str{};
-	// Check each case, for unlisted input, use Void to represent.
-	switch (tile_type)
-	{
-		case TileTypeEnum::INDUSTRIAL:
-			res_str = INDUSTRIAL_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::COMMERCIAL:
-			res_str = COMMERCIAL_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::RESIDENTIAL:
-			res_str = RESIDENTIAL_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::GRASS:
-			res_str = GRASS_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::FOREST:
-			res_str = FOREST_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::WATER:
-			res_str = WATER_TILE_TEXTURE_NAME;
-			break;
-		case TileTypeEnum::ROAD:
-			res_str = ROAD_TILE_TEXTURE_NAME;
-			break;
-		default:
-			res_str = VOID_TILE_TEXTURE_NAME;
-			break;
-	}
-	return res_str;
+	return m_cost;
 }
 
 void Tile::set_level(unsigned int level)
@@ -79,4 +43,14 @@ void Tile::set_level(unsigned int level)
 unsigned int Tile::get_population_limit_per_level() const
 {
 	return m_population_limit_per_level;
+}
+
+void Tile::set_production_per_day(float production_per_day)
+{
+	m_production_per_day = production_per_day;
+}
+
+float Tile::get_production_per_day() const
+{
+	return m_production_per_day;
 }

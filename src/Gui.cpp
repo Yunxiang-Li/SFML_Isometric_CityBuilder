@@ -118,7 +118,7 @@ void Gui::hide()
 	m_is_visible = false;
 }
 
-void Gui::highlight_entry(const unsigned int entry_idx)
+void Gui::highlight_entry(const int entry_idx)
 {
 	for (size_t i = 0; i < m_Gui_entry_vec.size(); ++i)
 	{
@@ -150,4 +150,14 @@ std::string Gui::get_mouse_pos_entry_msg(const sf::Vector2f& mouse_pos) const
 {
 	const int entry_idx = this->get_gui_entry_idx(mouse_pos);
 	return this->get_entry_msg(entry_idx);
+}
+
+bool Gui::get_visible() const
+{
+	return m_is_visible;
+}
+
+unsigned int Gui::get_entry_size() const
+{
+	return m_Gui_entry_vec.size();
 }
