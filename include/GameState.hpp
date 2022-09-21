@@ -5,7 +5,7 @@
 #include "Game.hpp"
 
 /**
- * A virtual base class handles render, chanceLevelUp, input process under each game state.
+ * A virtual base class represents a pure game state.
  */
 class GameState
 {

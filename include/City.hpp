@@ -10,7 +10,7 @@
 class Tile;
 
 /**
- * Manages the actual gameplay.
+ * Represents the game city and manages the actual gameplay.
  */
 class City
 {

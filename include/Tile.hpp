@@ -6,7 +6,7 @@
 #include "TileTypeEnum.hpp"
 
 /**
- * This class represents all behaviors of one Tile object.
+ * This class processes all behaviors of one Tile object.
  */
 class Tile
 {

@@ -3,7 +3,7 @@
 #define TILETYPE_HPP
 
 /**
- * This enum class contains all 4 types of tiles and 3 types of in-game zones.
+ * This enum class contains all 7 types of tiles within the game.
  */
 enum class TileTypeEnum
 {

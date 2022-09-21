@@ -10,6 +10,9 @@
 // Forward declaration.
 class Animation;
 
+/**
+ * This class help manage each animation within the game.
+ */
 class AnimationHandler
 {
  public:
