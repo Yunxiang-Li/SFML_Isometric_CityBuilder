@@ -49,7 +49,7 @@ The whole project contains three main folders, **include** folder, **src** folde
 
 3. **Resources** folder contains **1** font(.ttf) file, **2** binary data files(.dat) and **8** game objects' image files(.png).
 
-Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
+Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SFML_Isometric_CityBuilder_Document/html)
 
 **1.** `Animation.hpp` : represents one certain animation of tiles.
 
