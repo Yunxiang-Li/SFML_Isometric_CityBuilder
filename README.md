@@ -41,6 +41,8 @@ I Use C++14, [SFML(Simple and Fast Multimedia Library)](https://www.sfml-dev.org
 
 ## Structure
 
+Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SFML_Isometric_CityBuilder_Document/html)
+
 The whole project contains three main folders, **include** folder, **src** folder and **resources** folder.
 
 1. **include** folder contains altogether **16** header files:
@@ -48,8 +50,6 @@ The whole project contains three main folders, **include** folder, **src** folde
 2. **src** folder contains altogether **11** source files:
 
 3. **Resources** folder contains **1** font(.ttf) file, **2** binary data files(.dat) and **8** game objects' image files(.png).
-
-Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SFML_Isometric_CityBuilder_Document/html)
 
 **1.** `Animation.hpp` : represents one certain animation of tiles.
 
