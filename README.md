@@ -9,6 +9,7 @@ You can check the video, screenshots/GIFs and more information about this demo f
 ## Table of Contents
 
 - [Overview](#Overview)
+- [Features](#Features)
 - [Install](#install)
 - [Usage](#Usage)
 - [Structure](#Structure)
@@ -24,6 +25,16 @@ Inside the **main game scene**, player will notice the information bar on the bo
 Player can press mouse left button to select a tile or a bunch of tiles and de-select them by clicking right mouse button. If city's fund is enough to pay selected tiles' overall cost, all selected tiles will be replaced by player's previously stored tile type. Besides, player can click mouse right button and switch between different tile types inside the displayed tile menu Gui. There are altogether **7** types of tiles in this game: commercial, residential, industrial, road, grass, water and forest. Commercial, residential and industrial tiles are responsible for the city's development(more money, more goods, more people and thus more employee) and can only be placed on grass tiles. Additionally, these 3 tiles will upgrade based on small chance and city's development. After level up, textures will also be upgraded. Road and water tiles are also placeable only on grass tiles. Road tile is used to connect different regions and its texture will be updated automatically according to its neighbor road tiles' directions. Water tiles are just decoration and have simple animation.
 
 When player quit the game, current game map will be saved automatically and load next time when player run the game again.
+
+## Features
+
+1. Apply std::stack based finite state machine to handle multiple game states
+2. Use Virtual base class and inheritance to implement different game state classes
+3. Create the TextureManager class with smart pointers and follow Singleton pattern
+4. Make use of enum class and a seperate AnimationHandler class to create all 7 types of tile objects' animation
+5. Utilize DFS and isometric structure simulated by 3X3 tile objects to split the map as multiple distinct regions
+6. Implement Gui system with seperate Gui Entry, Gui Style and main Gui components
+7. Perform game map data as a dat file which can be saved and loaded
 
 ## Install
 
